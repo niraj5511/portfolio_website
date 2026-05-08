@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.hero {
+  display: flex;
+  height: 500px;
+  justify-content: space-between;
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-self: center;
+    justify-self: center;
+    justify-content: center;
+    align-content: center;
+
+    .texts {
+      display: flex;
+      flex-direction: column;
+      justify-self: center;
+      align-self: center;
+      width: 60%;
+
+      .intro-text {
+        font-size: 50px;
+        margin-bottom: 5px;
+        margin-top: 10px;
+font-family: "Poppins";
+        span {
+          color: rgb(252, 47, 11);
+        }
+      }
+      p {
+        font-size: 32px;
+        margin-top: 6px;
+        color: rgb(18, 99, 54);
+        font-weight: bold;
+
+        .changing-text {
+          font-weight: bold;
+          color: rgb(140, 0, 255);
+        }
+      }
+    }
+
+    .social-links {
+      /* display: flex; */
+      /* justify-content:center; */
+      margin-left: 141px;
+      
+      img{
+
+        width: 40px;
+        height: 40px;
+        padding: 5px;
+        border-radius: 50%;
+        margin: 0px 10px;
+        box-shadow: 5px 5px 20px 3px rgb(13, 87, 11) ;
+        background-color: rgb(255, 255, 255);
+        cursor: pointer;
+        transition: 0.2s linear;
+      }
+
+      img:hover{
+        transform: scale(1.5);
+      }
+    }
+  }
+  .hero-img-section {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    .hero-img {
+      display: flex;
+      align-self: center;
+      justify-self: center;
+
+      height: fit-content;
+      border-radius: 50%;
+      border-style: solid;
+      border-width: 3px;
+      border-color: rgb(0, 26, 255);
+      box-shadow: 5px 5px 20px 5px black;
+
+      img {
+        border-style: none;
+        border-radius: 50%;
+        height: 400px;
+        width: 400px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s linear;
+      }
+
+      img:hover {
+        transform: perspective(1000px) rotateX(-10deg) rotateY(-10deg)
+          scale3d(1.18, 1.18, 0.5);
+        border-style: solid;
+        border-width: 4px;
+        border-color: rgb(255, 0, 0);
+      }
+    }
+  }
+}
