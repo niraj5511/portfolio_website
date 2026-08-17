@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
 import About from "./components/About.jsx";
+import Skills from "./components/Skills.jsx";
 
 // As we build each section, import it above and add it below,
 // in the same order as the old site:
@@ -12,6 +13,7 @@ function App() {
       <Navbar />
       <Hero />
       <About />
+      <Skills />
     </>
   );
 }
