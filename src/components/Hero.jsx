@@ -1,66 +1,159 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Hero.css";
-import linkedin from "../assets/linkedin.png";
-import github from "../assets/github.png";
-import facebook from "../assets/facebook.png";
-import hero from "../assets/hero.jpeg";
 import Typed from "typed.js";
+import VanillaTilt from "vanilla-tilt";
+import heroImg from "../assets/hero.jpeg";
 
 const Hero = () => {
-  const textRef = useRef(null);
+  const typedTextRef = useRef(null);
+  const imageRef = useRef(null);
 
+  // typing animation effect
   useEffect(() => {
-    const typed = new Typed(textRef.current, {
+    const typed = new Typed(typedTextRef.current, {
       strings: [
         "Frontend Development",
         "Backend Development",
+        "Web Designing",
         "Web Development",
       ],
-
       loop: true,
       typeSpeed: 50,
       backSpeed: 25,
       backDelay: 500,
     });
 
-    return () => {
-      typed.destroy();
-    };
+    return () => typed.destroy();
+  }, []);
+
+  // tilt-on-hover effect for the profile image
+  useEffect(() => {
+    VanillaTilt.init(imageRef.current, { max: 15 });
+  }, []);
+
+  // particle background (particlesJS comes from the script tag in index.html)
+  useEffect(() => {
+    if (window.particlesJS) {
+      window.particlesJS("particles-js", {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: "#1a1a2e" },
+          shape: {
+            type: "star",
+            stroke: {
+              width: 2,
+              color: [
+                "rgba(255,255,255,0.8)",
+                "rgba(255,255,200,0.7)",
+                "rgba(173,216,230,0.8)",
+              ],
+            },
+            polygon: { nb_sides: 5 },
+          },
+          opacity: {
+            value: 0.5,
+            random: true,
+            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false },
+          },
+          size: {
+            value: 3,
+            random: true,
+            anim: { enable: true, speed: 39, size_min: 0.81, sync: false },
+          },
+          line_linked: {
+            enable: true,
+            distance: 144,
+            color: "#0052cc",
+            opacity: 0.2,
+            width: 1.6,
+          },
+          move: {
+            enable: true,
+            speed: 5,
+            direction: "none",
+            random: true,
+            straight: false,
+            out_mode: "out",
+          },
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: {
+            onhover: { enable: true, mode: "repulse" },
+            onclick: { enable: true, mode: "push" },
+            resize: true,
+          },
+          modes: {
+            repulse: { distance: 203 },
+            push: { particles_nb: 4 },
+          },
+        },
+        retina_detect: true,
+      });
+    }
   }, []);
 
   return (
-    <div className="hero">
-      <div className="hero-text">
-        <div className="texts">
-          <h1 className="intro-text">Hi There,</h1>
-          <h1 className="intro-text">
-            I'm <span>Niraj Bhusal</span>
-          </h1>
+    <section className="home" id="home">
+      <div id="particles-js"></div>
 
-          <p>
-            I'm into <span ref={textRef} className="changing-text"></span>{" "}
-          </p>
-        </div>
+      <div className="content">
+        <h2>
+          Hi There,
+          <br />
+          I'm Niraj <span>Bhusal</span>
+        </h2>
+        <p>
+          I am into <span className="typing-text" ref={typedTextRef}></span>
+        </p>
+        <a href="#about" className="btn">
+          <span>About Me</span>
+          <i className="fas fa-arrow-circle-down"></i>
+        </a>
 
-        <div className="social-links">
-          <a href="https://www.linkedin.com/in/nirajbhusal551/" target="_blank">
-            <img src={linkedin} alt="L" />
-          </a>
-          <a href="https://github.com/niraj5511" target="_blank">
-            <img src={github} alt="G" />
-          </a>
-          <a href="https://www.facebook.com/ni.raj.31586" target="_blank">
-            <img src={facebook} alt="F" />
-          </a>
+        <div className="socials">
+          <ul className="social-icons">
+            <li>
+              <a
+                className="linkedin"
+                aria-label="LinkedIn"
+                href="https://www.linkedin.com/in/niraj-bhusal-6262b830a/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i className="fab fa-linkedin"></i>
+              </a>
+            </li>
+
+            <li>
+              <a
+                className="github"
+                aria-label="GitHub"
+                href="https://github.com/niraj5511"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i className="fab fa-github"></i>
+              </a>
+            </li>
+            <li>
+              <a className="instagram" aria-label="Instagram" href="#">
+                <i className="fab fa-instagram"></i>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <div className="hero-img-section">
-        <div className="hero-img">
-          <img src={hero} alt="hero-image" />
-        </div>
+      <div className="image">
+        <img
+          draggable="false"
+          ref={imageRef}
+          src={heroImg}
+          alt="Niraj Bhusal"
+        />
       </div>
-    </div>
+    </section>
   );
 };
 
