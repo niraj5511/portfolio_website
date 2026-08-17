@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Ramabhadra&display=swap");
+
+.about-section {
+  display: flex;
+  flex-direction: column;
+  height: 590px;
+  /* background-color: rgb(145, 133, 133); */
+
+  .about-title {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    justify-content: center;
+    align-content: center;
+    background-color: white;
+
+    img{
+      justify-self: center;
+      align-self: center;
+      width: 45px;
+      margin: 10px;
+      /* height: 45px; */
+    }
+
+    h2 {
+      align-self: center;
+      font-size: 35px;
+      font-family: "Poppins";
+      margin: 0px;
+    }
+  }
+
+  .about-description {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+
+    .about-image {
+      /* display: flex; */
+      /* justify-self: center; */
+      align-self: center;
+      margin: 0px 200px;
+      padding: 1px;
+
+      img {
+        /* width: 400px; */
+        height: 400px;
+      }
+    }
+
+    .about-content {
+      display: flex;
+      flex-direction: column;
+      justify-self: center;
+      align-self: center;
+      margin-right: 165px;
+
+      h3 {
+        font-size: 28px;
+        font-family: "Ramabhadra";
+        margin-bottom: 0px;
+        color: rgb(185, 79, 18);
+      }
+
+      .my-title {
+        font-size: 20px;
+        font-family: "Poppins";
+        font-weight: bold;
+        margin-bottom: 0px;
+        color: blue;
+      }
+
+      .my-description {
+        font-size: 16px;
+        font-family: "Poppins";
+      }
+
+      .my-email {
+        margin: 1px 0px;
+        font-family: "Poppins";
+      }
+
+      .my-address {
+        margin: 8px 0px;
+        font-family: Poppins;
+      }
+
+      span{
+        color: rgb(0, 26, 255);
+        font-weight: bold
+      }
+
+      button{
+        margin-top: 20px;
+        width: fit-content;
+        font-family: 'Poppins';
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        background-color: rgb(38, 58, 146);
+        padding: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+}
