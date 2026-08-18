@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 import mylogo from "../assets/mylogo3.png";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
-  { href: "#skills", label: "Skills" },
-  { href: "#work", label: "Projects" },
-  { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
+  { to: "/#home", id: "home", label: "Home" },
+  { to: "/#skills", id: "skills", label: "Skills" },
+  { to: "/#work", id: "work", label: "Projects" },
+  { to: "/#experience", id: "experience", label: "Experience" },
+  { to: "/#contact", id: "contact", label: "Contact" },
 ];
 
 const Navbar = () => {
-  // controls whether the mobile menu is open
   const [menuOpen, setMenuOpen] = useState(false);
-  // tracks which section is currently in view, to highlight the right nav link
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
-      // close the mobile menu whenever the user scrolls
       setMenuOpen(false);
 
-      // figure out which section is currently on screen
-      const sections = document.querySelectorAll("section");
+      const sections = document.querySelectorAll("section[id]");
       sections.forEach((section) => {
         const top = window.scrollY;
         const offset = section.offsetTop - 200;
@@ -36,14 +33,15 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // run once immediately, so the correct link is active on page load
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header>
-      <a href="#home">
+      <Link to="/#home">
         <img src={mylogo} width="132" alt="Niraj Bhusal logo" />
-      </a>
+      </Link>
 
       <div
         id="menu"
@@ -54,13 +52,14 @@ const Navbar = () => {
       <nav className={`navbar ${menuOpen ? "nav-toggle" : ""}`}>
         <ul>
           {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={activeSection === link.href.slice(1) ? "active" : ""}
+            <li key={link.id}>
+              <Link
+                to={link.to}
+                className={activeSection === link.id ? "active" : ""}
+                onClick={() => setMenuOpen(false)}
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
