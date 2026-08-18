@@ -13,7 +13,7 @@ const Hero = () => {
     const typed = new Typed(typedTextRef.current, {
       strings: [
         "Frontend Development",
-        "Backend Development",
+        "SAP B1 and HANA",
         "Web Designing",
         "Web Development",
       ],

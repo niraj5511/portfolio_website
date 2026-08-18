@@ -33,7 +33,7 @@ const categories = [
   {
     id: "sap",
     label: "SAP & Enterprise Systems",
-    tagline: "Specialization",
+    tagline: "Hands-on Experience",
     variant: "dark",
     skills: [
       { name: "SAP Business One", type: "fa", icon: "fa-cubes" },

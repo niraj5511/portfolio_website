@@ -24,22 +24,24 @@ const About = () => {
             ref={imageRef}
             src={aboutImg}
             alt="Niraj with laptop"
-            title="Niraj - Full Stack Developer"
+            title="Niraj - Developer"
           />
         </div>
 
         <div className="content">
           <h3>Hello, I'm Niraj</h3>
           <span className="tag">
-            Front-End Developer | Aspiring Full-Stack Engineer
+            Front-End Developer | Hands-on Experience with SAP B1 & HANA
           </span>
           <p>
-            I'm a Computer Engineering student at NCIT, Lalitpur, Nepal, with a
-            passion for building responsive and user-friendly web applications.
-            Specializing in front-end development with React.js, I also have a
-            basic grasp of backend technologies, enabling me to contribute
-            across the stack. My strengths extend beyond coding to include
-            strong presentation and leadership skills, which help me effectively
+            I'm a Computer Engineering student at NCIT, Pokhara University, with
+            a passion for building responsive and user-friendly web
+            applications. I specialize in front-end development with React.js,
+            and through my internship at IIS Incorporation, I've also gained
+            hands-on experience with SAP Business One, SAP HANA, and Crystal
+            Reports. My strengths extend beyond coding to include strong
+            presentation and leadership skills, sharpened through my role as
+            Secretary of Nepal Tek Community, which help me effectively
             communicate ideas and lead collaborative projects. I'm always eager
             to learn new tools and create meaningful digital experiences.
           </p>
