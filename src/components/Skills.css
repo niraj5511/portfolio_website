@@ -83,6 +83,9 @@
   max-height: 100%;
   object-fit: contain;
 }
+.skills .container .bar .info .icon-box i {
+  font-size: 2rem;
+}
 .skills .container .bar .info span {
   font-size: 1.6rem;
   font-weight: 600;

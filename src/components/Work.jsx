@@ -11,7 +11,7 @@ import bookSearchImg from "../assets/reactprojects.png";
 const projects = [
   //   {
   //     name: "SecureShield",
-  //     desc: "A phishing URL and SMS scam detection system with SHAP explainability — won First Position at NCIT's Final Year Project Exhibition 2083.",
+  //     desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
   //     image: secureShieldImg,
   //     links: {
   //       view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
