@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./Work.css";
 import VanillaTilt from "vanilla-tilt";
+import { Link } from "react-router-dom";
 
 // import secureShieldImg from "../assets/secureshield.png";
 // import nepseImg from "../assets/nepse-predictor.png";
@@ -8,24 +9,24 @@ import cgpaImg from "../assets/cgpa-calculator.png";
 import bookSearchImg from "../assets/reactprojects.png";
 
 const projects = [
-//   {
-//     name: "SecureShield",
-//     desc: "A phishing URL and SMS scam detection system with SHAP explainability — won First Position at NCIT's Final Year Project Exhibition 2083.",
-//     image: secureShieldImg,
-//     links: {
-//       view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
-//       code: "https://github.com/niraj5511", // replace with the actual repo link
-//     },
-//   },
-//   {
-//     name: "NEPSE Share Price Predictor",
-//     desc: "A React web app that predicts NEPSE share prices using ridge regression with walk-forward backtesting and an interactive SVG chart.",
-//     image: nepseImg,
-//     links: {
-//       view: "#",
-//       code: "https://github.com/niraj5511",
-//     },
-//   },
+  //   {
+  //     name: "SecureShield",
+  //     desc: "A phishing URL and SMS scam detection system with SHAP explainability — won First Position at NCIT's Final Year Project Exhibition 2083.",
+  //     image: secureShieldImg,
+  //     links: {
+  //       view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
+  //       code: "https://github.com/niraj5511", // replace with the actual repo link
+  //     },
+  //   },
+  //   {
+  //     name: "NEPSE Share Price Predictor",
+  //     desc: "A React web app that predicts NEPSE share prices using ridge regression with walk-forward backtesting and an interactive SVG chart.",
+  //     image: nepseImg,
+  //     links: {
+  //       view: "#",
+  //       code: "https://github.com/niraj5511",
+  //     },
+  //   },
   {
     name: "CGPA Calculator",
     desc: "A professional CGPA calculator. Add subjects, credits, and grades per semester. Save results and share via link.",
@@ -73,10 +74,20 @@ const Work = () => {
               <div className="desc">
                 <p>{project.desc}</p>
                 <div className="btns">
-                  <a href={project.links.view} className="btn" target="_blank" rel="noreferrer">
+                  <a
+                    href={project.links.view}
+                    className="btn"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <i className="fas fa-eye"></i> View
                   </a>
-                  <a href={project.links.code} className="btn" target="_blank" rel="noreferrer">
+                  <a
+                    href={project.links.code}
+                    className="btn"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Code <i className="fas fa-code"></i>
                   </a>
                 </div>
@@ -87,10 +98,10 @@ const Work = () => {
       </div>
 
       <div className="viewall">
-        <a href="https://github.com/niraj5511" target="_blank" rel="noreferrer" className="btn">
+        <Link to="/projects" className="btn">
           <span>View All Projects</span>
           <i className="fas fa-arrow-circle-right"></i>
-        </a>
+        </Link>
       </div>
     </section>
   );
