@@ -49,7 +49,7 @@ const About = () => {
           <div className="box-container">
             <div className="box">
               <p>
-                <span>Email: </span> nirajbhusal2077@gmail.com
+                <span>Email: </span> nirajbhusal551@gmail.com
               </p>
               <p>
                 <span>Location: </span> Lalitpur, Nepal

@@ -38,7 +38,7 @@ const Footer = () => {
             <i className="fas fa-phone"></i>+977 9860970391
           </p>
           <p>
-            <i className="fas fa-envelope"></i>nirajbhusal2077@gmail.com
+            <i className="fas fa-envelope"></i>nirajbhusal551@gmail.com
           </p>
           <p>
             <i className="fas fa-map-marked-alt"></i>Lalitpur, Nepal
