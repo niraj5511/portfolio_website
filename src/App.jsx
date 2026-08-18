@@ -5,6 +5,7 @@ import ScrollTop from "./components/ScrollTop.jsx";
 import ScrollManager from "./components/ScrollManager.jsx";
 import Home from "./pages/Home.jsx";
 import ProjectsPage from "./pages/ProjectsPage.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <ScrollTop />
