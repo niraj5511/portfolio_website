@@ -1,113 +1,157 @@
 .skills {
-  min-height: 90vh;
   background: #ffffff;
+  padding-top: 3rem;
+  padding-bottom: 4rem;
 }
-.skills h2 {
-  color: #1a1a2e;
-  font-size: 2.5rem;
+
+.skills-eyebrow {
   text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  color: #0052cc;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  margin-bottom: 0.5rem;
 }
+
 .skills .heading span {
   color: #ff7b00;
 }
-.skills .container {
-  background: #12123a;
-  color: #fff;
-  border-radius: 1.2rem;
-  padding: 2.5rem 2rem;
-  width: 90%;
-  margin: 2rem auto;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-.skills .qoute {
-  font-size: 1.75rem;
-  color: #0052cc;
-  text-align: center;
-  font-family: "Nunito", sans-serif;
-  font-weight: 700;
-  margin-top: 0.5rem;
-}
-.skills .container .row {
+
+/* three-column grid, stacks on smaller screens */
+.skills-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1.8rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  align-items: start;
 }
-.skills .container .bar {
-  aspect-ratio: 1 / 1;
-  min-width: 0;
-  margin-bottom: 15px;
-  padding: 20px 10px;
-  border-radius: 50%;
-  background: linear-gradient(
-    145deg,
-    rgba(0, 0, 50, 0.85),
-    rgba(10, 10, 70, 0.9)
-  );
-  box-shadow:
-    6px 6px 12px rgba(0, 0, 0, 0.4),
-    -6px -6px 12px rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  border: 4px solid rgb(26, 198, 221);
-  backdrop-filter: blur(4px);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+.skill-card {
+  border-radius: 1.2rem;
+  padding: 2.4rem 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.skills .container .bar:hover {
-  box-shadow: 0 12px 25px rgb(240, 7, 7);
-  background-color: rgba(5, 5, 40, 0.95);
-  transform: scale(1.03) translateY(-4px);
+
+/* the two "regular" cards: quiet, light, understated */
+.skill-card.light {
+  background: #f7f9fc;
+  border: 1px solid #e5ecfb;
 }
-.skills .container .bar .info {
+.skill-card.light:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 82, 204, 0.08);
+}
+.skill-card.light .skill-card-tagline {
+  color: #0052cc;
+}
+.skill-card.light h3 {
+  color: #1a1a2e;
+}
+.skill-card.light .chip {
+  background: #ffffff;
+  border: 1px solid #e5ecfb;
+}
+.skill-card.light .chip-label {
+  color: #1a1a2e;
+}
+
+/* the SAP card: the signature element, deliberately elevated above the other two */
+.skill-card.dark {
+  background: linear-gradient(160deg, #0a1128, #0d1a3f);
+  border: 1px solid #123166;
+  transform: scale(1.04);
+  box-shadow: 0 16px 32px rgba(10, 110, 209, 0.18);
+}
+.skill-card.dark:hover {
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 20px 40px rgba(10, 110, 209, 0.28);
+}
+.skill-card.dark .skill-card-tagline {
+  color: #4fb6ff;
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  font-weight: 800;
+}
+.skill-card.dark h3 {
+  color: #ffffff;
+}
+.skill-card.dark .chip {
+  background: rgba(79, 182, 255, 0.08);
+  border: 1px solid rgba(79, 182, 255, 0.25);
+}
+.skill-card.dark .chip-icon i {
+  color: #4fb6ff;
+}
+.skill-card.dark .chip-label {
+  color: #eaf3ff;
+}
+
+.skill-card-header {
+  margin-bottom: 1.8rem;
+}
+.skill-card-tagline {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: "Nunito", sans-serif;
+  margin-bottom: 0.4rem;
+}
+.skill-card-header h3 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.chip-row {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
 }
-.skills .container .bar .info .icon-box {
-  width: 7.5rem;
-  height: 7.5rem;
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 0.7rem;
+  transition: transform 0.2s ease;
+}
+.chip:hover {
+  transform: translateX(4px);
+}
+.chip-icon {
+  width: 2.4rem;
+  height: 2.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border-radius: 50%;
-  padding: 1.5rem;
+  flex-shrink: 0;
 }
-.skills .container .bar .info .icon-box img {
+.chip-icon img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
-.skills .container .bar .info .icon-box i {
-  font-size: 2rem;
+.chip-icon i {
+  font-size: 1.9rem;
 }
-.skills .container .bar .info span {
-  font-size: 1.6rem;
+.chip-label {
+  font-size: 1.5rem;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
-  letter-spacing: 0.5px;
-  color: #f0f0f0;
-  margin-top: 0.5rem;
 }
 
-@media screen and (max-width: 600px) {
-  .skills .container {
-    padding: 0;
-    margin: 0;
+@media screen and (max-width: 900px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
   }
-  .skills .container .row {
-    grid-template-columns: repeat(2, 1fr);
-    margin: 1rem;
-    padding: 2rem 0.2rem;
-    gap: 1rem;
+  .skill-card.dark {
+    transform: scale(1);
+    order: -1; /* SAP card leads on mobile, since side-by-side scale emphasis is lost when stacked */
   }
-  .skills .container {
-    margin-top: 10px;
-    width: 100%;
+  .skill-card.dark:hover {
+    transform: translateY(-4px);
   }
 }
