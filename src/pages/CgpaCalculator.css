@@ -1,0 +1,213 @@
+.cgpa-calculator {
+  background: #ffffff;
+  min-height: 90vh;
+}
+.cgpa-calculator .heading span {
+  color: #ff7b00;
+}
+.cgpa-subtitle {
+  text-align: center;
+  color: #0052cc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin-top: 0.5rem;
+}
+.cgpa-container {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+}
+
+.cgpa-card {
+  background: #f7f9fc;
+  border: 1px solid #e5ecfb;
+  border-radius: 1rem;
+  padding: 1.8rem;
+  position: relative;
+  margin-bottom: 2rem;
+}
+.cgpa-card h3 {
+  color: #1a1a2e;
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+}
+.remove-sem {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.cgpa-row {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+.cgpa-row input,
+.cgpa-row select {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccd6ea;
+  background: #ffffff;
+  color: #1a1a2e;
+}
+.cgpa-row button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #fff;
+}
+.generate-btn {
+  background: #22c55e;
+}
+.add-subject-btn {
+  background: #f59e0b;
+}
+.remove-btn {
+  background: #ef4444;
+  flex: 0 0 auto;
+}
+
+.dept-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.dept-row label {
+  font-size: 1.4rem;
+  color: #1a1a2e;
+  font-weight: 600;
+}
+.dept-row select {
+  flex: 1;
+  min-width: 180px;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccd6ea;
+}
+.autofill-btn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.sem-result {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  color: #0052cc;
+  font-weight: 600;
+}
+
+.cgpa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1.5rem;
+}
+
+.cgpa-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+.add-btn,
+.download-btn {
+  padding: 1.4rem 2.5rem;
+  border-radius: 0.6rem;
+  border: none;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  font-family: "Nunito", sans-serif;
+}
+.add-btn {
+  background: #0052cc;
+}
+.download-btn {
+  background: #16a34a;
+}
+.download-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.final-result {
+  text-align: center;
+  font-size: 2rem;
+  color: #1a1a2e;
+  background: #eaf3ff;
+  border: 1px solid #cfe2ff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+.final-result strong {
+  color: #0052cc;
+}
+
+.cgpa-about {
+  max-width: 800px;
+  margin: 3rem auto 0;
+  text-align: center;
+}
+.cgpa-about h3 {
+  color: #1a1a2e;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.cgpa-about p {
+  color: #555;
+  font-size: 1.5rem;
+  line-height: 2.2rem;
+}
+
+.backbtn {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0 2rem;
+}
+.backbtn .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.4rem 2.8rem;
+  border-radius: 0.5em;
+  color: #fff;
+  background: #0052cc;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 15px rgba(0, 82, 204, 0.3);
+  transition: all 0.3s ease;
+}
+.backbtn .btn:hover {
+  background: #003d99;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .cgpa-grid {
+    grid-template-columns: 1fr;
+  }
+}
