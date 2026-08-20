@@ -44,6 +44,245 @@
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    <!--
+      Preloader styles live inline rather than in src/components/*.css on
+      purpose. Vite emits the app bundle as a deferred <script type="module">,
+      so first paint happens BEFORE any React code runs — a normal React
+      component would only appear after the ~710 KB bundle lands, which is the
+      exact wait the preloader exists to cover. An external stylesheet would
+      cost an extra request and defeat first-frame paint the same way.
+
+      Every class is `pl-` prefixed: src/index.css applies a global
+      `* { transition: all .2s linear }` reset and generic names like
+      .content / .image / .box are already styled by several components.
+
+      Fonts are deliberately system stacks, NOT Poppins. Poppins is @import-ed
+      from inside the bundled CSS, so it is unavailable at first paint — using
+      it here would mean the name renders in a fallback and then visibly
+      reflows to Poppins partway through a screen that only lives ~2s.
+    -->
+    <style>
+      html.pl-loading,
+      html.pl-loading body {
+        overflow: hidden;
+      }
+
+      #preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* same as body in src/index.css, so dismissing causes no colour jump */
+        background: #f7f7f7;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+      }
+
+      #preloader .pl-inner {
+        position: relative;
+        text-align: center;
+        padding: 0 4vw;
+        transition:
+          opacity 0.5s ease,
+          transform 0.5s ease;
+      }
+
+      /* ---------- the name, with a gradient sweeping across it ---------- */
+      #preloader .pl-name {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        font-size: clamp(2.8rem, 7.6vw, 7rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: clamp(0.18rem, 0.85vw, 0.8rem);
+        white-space: nowrap;
+        color: #1a1a2e;
+      }
+
+      /* Only go transparent where background-clip: text actually works —
+         otherwise the name would render invisible instead of just unanimated. */
+      @supports (background-clip: text) or (-webkit-background-clip: text) {
+        #preloader .pl-name {
+          background-image: linear-gradient(
+            90deg,
+            #1a1a2e 0%,
+            #1a1a2e 38%,
+            #0052cc 47%,
+            #ff7b00 53%,
+            #1a1a2e 62%,
+            #1a1a2e 100%
+          );
+          background-size: 320% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          color: transparent;
+          animation: pl-sweep 2.4s linear infinite;
+        }
+      }
+
+      @keyframes pl-sweep {
+        0% {
+          background-position: 130% 0;
+        }
+        100% {
+          background-position: -130% 0;
+        }
+      }
+
+      /* ---------- the typed code subtitle ---------- */
+      #preloader .pl-sub {
+        margin-top: 1.8rem;
+        font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+        font-size: clamp(1.3rem, 1.9vw, 1.8rem);
+        /* reserve the line height up front so nothing shifts as it types */
+        min-height: 2.4em;
+      }
+      #preloader .pl-kw {
+        color: #7303a7;
+      }
+      #preloader .pl-pr {
+        color: #0052cc;
+      }
+      #preloader .pl-str {
+        color: #c2560a;
+      }
+      #preloader .pl-pn {
+        color: rgba(26, 26, 46, 0.42);
+      }
+
+      #preloader .pl-cur {
+        display: inline-block;
+        width: 0.55em;
+        height: 1.05em;
+        vertical-align: -0.16em;
+        background: #ff7b00;
+        animation: pl-blink 1s steps(1) infinite;
+      }
+      #preloader .pl-cur.pl-off {
+        display: none;
+      }
+      @keyframes pl-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ---------- progress ---------- */
+      #preloader .pl-track {
+        margin: 2.6rem auto 0;
+        width: min(32rem, 60vw);
+        height: 3px;
+        border-radius: 3px;
+        background: rgba(26, 26, 46, 0.1);
+        overflow: hidden;
+      }
+      #preloader .pl-bar {
+        width: 0%;
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #0052cc, #ff7b00);
+        /* explicit, because index.css's global `transition: all .2s linear`
+           starts applying to these nodes once the bundle CSS lands */
+        transition: width 0.12s linear;
+      }
+      #preloader .pl-pct {
+        margin-top: 1.1rem;
+        font-family: ui-monospace, "Consolas", monospace;
+        font-size: 1.25rem;
+        letter-spacing: 0.06rem;
+        color: rgba(26, 26, 46, 0.4);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- exit ---------- */
+      #preloader.pl-done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #preloader.pl-done .pl-inner {
+        opacity: 0;
+        transform: scale(0.98);
+      }
+
+      /*
+        DARK VARIANT — inert for now. The site is light-only today (no
+        prefers-color-scheme, no toggle, body is #f7f7f7), so nothing sets
+        these. When site-wide dark mode lands, whichever convention it uses —
+        a `pl-dark` class or `data-theme="dark"` on <html> — flips the
+        preloader over with no further changes here.
+      */
+      html.pl-dark #preloader,
+      html[data-theme="dark"] #preloader {
+        background: #12121e;
+      }
+      html.pl-dark #preloader .pl-name,
+      html[data-theme="dark"] #preloader .pl-name {
+        color: #e9e9f2;
+        background-image: linear-gradient(
+          90deg,
+          #e9e9f2 0%,
+          #e9e9f2 38%,
+          #4ea1ff 47%,
+          #ffb057 53%,
+          #e9e9f2 62%,
+          #e9e9f2 100%
+        );
+      }
+      html.pl-dark #preloader .pl-kw,
+      html[data-theme="dark"] #preloader .pl-kw {
+        color: #b57bff;
+      }
+      html.pl-dark #preloader .pl-pr,
+      html[data-theme="dark"] #preloader .pl-pr {
+        color: #4ea1ff;
+      }
+      html.pl-dark #preloader .pl-str,
+      html[data-theme="dark"] #preloader .pl-str {
+        color: #ffb057;
+      }
+      html.pl-dark #preloader .pl-pn,
+      html[data-theme="dark"] #preloader .pl-pn {
+        color: #6d6d85;
+      }
+      html.pl-dark #preloader .pl-track,
+      html[data-theme="dark"] #preloader .pl-track {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      html.pl-dark #preloader .pl-pct,
+      html[data-theme="dark"] #preloader .pl-pct {
+        color: rgba(255, 255, 255, 0.38);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        /* Kill the sweep, the blink and the scale. The bar still fills — a
+           frozen bar would give no feedback at all. The script also skips the
+           typing animation and prints the line in one go. */
+        #preloader .pl-name {
+          animation: none;
+          background-position: 0 0;
+        }
+        #preloader .pl-cur {
+          animation: none;
+        }
+        #preloader.pl-done .pl-inner {
+          transform: none;
+        }
+      }
+    </style>
+
+    <!-- Without this, a visitor with JS disabled would sit behind the
+         preloader forever and never reach the site at all. -->
+    <noscript>
+      <style>
+        #preloader {
+          display: none;
+        }
+      </style>
+    </noscript>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -85,10 +324,220 @@
         ]
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-Dqoty8Rr.js"></script>
+    <script type="module" crossorigin src="/assets/index-Crk9ifgA.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-BIDjcUox.css">
   </head>
   <body style="margin: 0px">
+    <div id="preloader" role="status" aria-live="polite" aria-label="Loading">
+      <div class="pl-inner">
+        <div class="pl-name">NIRAJ BHUSAL</div>
+        <div class="pl-sub" aria-hidden="true">
+          <span id="pl-type"></span><i id="pl-cur" class="pl-cur"></i>
+        </div>
+        <div class="pl-track">
+          <div id="pl-bar" class="pl-bar"></div>
+        </div>
+        <div id="pl-pct" class="pl-pct">0%</div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // Preloader controller.
+      //
+      // This lives inline rather than in the app bundle so it keeps working
+      // even if that bundle is slow, stale, or fails outright — the window
+      // load and MAX_MS paths do not depend on React existing at all.
+      //
+      // The bar tracks real milestones eased smoothly between each other, not
+      // byte-level progress: there is no honest way to measure that for
+      // images React mounts later. It never moves backwards and never stalls.
+      (function () {
+        var MIN_MS = 600; // don't flash on a warm-cache reload
+        var MAX_MS = 3000; // hard ceiling — never wait on the full ~4.8 MB of images
+        var FADE_MS = 500; // must match the #preloader opacity transition
+
+        var el = document.getElementById("preloader");
+        if (!el) return;
+
+        var root = document.documentElement;
+        var bar = document.getElementById("pl-bar");
+        var pct = document.getElementById("pl-pct");
+        var typeEl = document.getElementById("pl-type");
+        var curEl = document.getElementById("pl-cur");
+
+        root.classList.add("pl-loading"); // lock scrolling behind the panel
+
+        var started = Date.now();
+        var cur = 0;
+        var target = 10;
+        var finishing = false;
+        var closing = false;
+        var timers = [];
+
+        // targets only ever ratchet upward, so progress can't regress
+        function bump(v) {
+          if (v > target) target = v;
+        }
+
+        function paint() {
+          var n = Math.round(cur);
+          bar.style.width = n + "%";
+          pct.textContent = n + "%";
+        }
+
+        function tick() {
+          if (closing) return;
+          // ease toward the current milestone so the bar always looks alive;
+          // once finished, close the remaining gap faster so 100% is reached
+          // smoothly instead of visibly snapping
+          cur += (target - cur) * (finishing ? 0.25 : 0.08);
+          if (target - cur < 0.5) cur = target;
+          paint();
+          if (finishing && cur >= 100) {
+            close();
+            return;
+          }
+          requestAnimationFrame(tick);
+        }
+
+        function finish() {
+          if (finishing) return;
+          finishing = true;
+          target = 100;
+        }
+
+        function close() {
+          if (closing) return;
+          closing = true;
+          timers.forEach(clearTimeout);
+          setTimeout(
+            function () {
+              el.classList.add("pl-done");
+              setTimeout(function () {
+                // remove the node outright, not just fade it: otherwise it
+                // still swallows clicks and is still read by screen readers
+                if (el.parentNode) el.parentNode.removeChild(el);
+                root.classList.remove("pl-loading");
+              }, FADE_MS);
+            },
+            Math.max(0, MIN_MS - (Date.now() - started)),
+          );
+        }
+
+        // ---- typed code subtitle -------------------------------------------
+        // Segments are [text, className] so the line can be syntax coloured
+        // while it is only partially revealed.
+        var SEGS = [
+          ["const", "pl-kw"],
+          [" ", "pl-pn"],
+          ["role", "pl-pr"],
+          [" = ", "pl-pn"],
+          ['"frontend dev"', "pl-str"],
+        ];
+        var LEN = SEGS.reduce(function (a, s) {
+          return a + s[0].length;
+        }, 0);
+
+        function escHtml(s) {
+          return s
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        }
+
+        function renderLine(n) {
+          var out = "",
+            used = 0;
+          for (var i = 0; i < SEGS.length && used < n; i++) {
+            var t = SEGS[i][0];
+            var take = Math.min(t.length, n - used);
+            out +=
+              '<span class="' +
+              SEGS[i][1] +
+              '">' +
+              escHtml(t.slice(0, take)) +
+              "</span>";
+            used += take;
+          }
+          return out;
+        }
+
+        var reduced =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (reduced) {
+          // no typing animation at all — print it and hide the cursor
+          typeEl.innerHTML = renderLine(LEN);
+          curEl.classList.add("pl-off");
+        } else {
+          // Tuned so the line completes around 1.5s, comfortably inside the
+          // 3s cap. On a warm-cache load the panel dismisses at MIN_MS with
+          // the line half-typed, but at that speed it reads as a flash rather
+          // than an unfinished screen.
+          var TYPE_START = 200;
+          var TYPE_STEP = 48;
+          for (var i = 1; i <= LEN; i++) {
+            (function (n) {
+              timers.push(
+                setTimeout(function () {
+                  if (closing) return;
+                  typeEl.innerHTML = renderLine(n);
+                  if (n === LEN) {
+                    timers.push(
+                      setTimeout(function () {
+                        curEl.classList.add("pl-off");
+                      }, 900),
+                    );
+                  }
+                }, TYPE_START + n * TYPE_STEP),
+              );
+            })(i);
+          }
+        }
+
+        // Called from src/App.jsx once React commits its first render. Must
+        // stay idempotent: StrictMode double-invokes effects in dev, and this
+        // can also fire after the panel is already gone.
+        window.__preloader = {
+          appReady: function () {
+            if (closing) return;
+            bump(45);
+
+            if (document.fonts && document.fonts.ready) {
+              document.fonts.ready.then(function () {
+                bump(65);
+              });
+            } else {
+              bump(65);
+            }
+
+            // The hero photo is the only above-the-fold asset worth waiting
+            // on. Its built filename is content-hashed, so it can't be named
+            // from static HTML — find it via the DOM now that Hero has
+            // rendered. Other routes have nothing above the fold to await.
+            var img = document.querySelector(".home .image img");
+            if (!img || img.complete) {
+              bump(90);
+            } else {
+              var mark = function () {
+                bump(90);
+              };
+              img.addEventListener("load", mark, { once: true });
+              img.addEventListener("error", mark, { once: true });
+            }
+          },
+        };
+
+        // load may already have fired if this ran late
+        if (document.readyState === "complete") finish();
+        else window.addEventListener("load", finish, { once: true });
+
+        setTimeout(finish, MAX_MS);
+        requestAnimationFrame(tick);
+      })();
+    </script>
+
     <div id="root"></div>
     <script src="/particles.min.js"></script>
     <script type="text/javascript">
