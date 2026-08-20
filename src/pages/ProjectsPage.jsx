@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 import VanillaTilt from "vanilla-tilt";
 import "./ProjectsPage.css";
 
-// import secureShieldImg from "../assets/secureshield.png";
+import secureShieldImg from "../assets/secureshield.png";
 // import nepseImg from "../assets/nepse-predictor.png";
 import cgpaImg from "../assets/cgpa-calculator.png";
 import bookSearchImg from "../assets/reactprojects.png";
 
 const allProjects = [
-//   {
-//     name: "SecureShield",
-//     category: "ml",
-//     desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
-//     image: secureShieldImg,
-//     links: { view: "#", code: "https://github.com/niraj5511" },
-//   },
+  {
+    name: "SecureShield",
+    category: "ml",
+    desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
+    image: secureShieldImg,
+    links: { view: "#", code: "https://github.com/niraj5511" },
+  },
 //   {
 //     name: "NEPSE Share Price Predictor",
 //     category: "ml",

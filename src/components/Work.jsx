@@ -3,21 +3,21 @@ import "./Work.css";
 import VanillaTilt from "vanilla-tilt";
 import { Link } from "react-router-dom";
 
-// import secureShieldImg from "../assets/secureshield.png";
+import secureShieldImg from "../assets/secureshield.png";
 // import nepseImg from "../assets/nepse-predictor.png";
 import cgpaImg from "../assets/cgpa-calculator.png";
 import bookSearchImg from "../assets/reactprojects.png";
 
 const projects = [
-  //   {
-  //     name: "SecureShield",
-  //     desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
-  //     image: secureShieldImg,
-  //     links: {
-  //       view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
-  //       code: "https://github.com/niraj5511", // replace with the actual repo link
-  //     },
-  //   },
+    {
+      name: "SecureShield",
+      desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
+      image: secureShieldImg,
+      links: {
+        view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
+        code: "https://github.com/niraj5511", // replace with the actual repo link
+      },
+    },
   //   {
   //     name: "NEPSE Share Price Predictor",
   //     desc: "A React web app that predicts NEPSE share prices using ridge regression with walk-forward backtesting and an interactive SVG chart.",

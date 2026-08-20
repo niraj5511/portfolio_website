@@ -40,6 +40,7 @@ const categories = [
       { name: "SAP HANA", type: "fa", icon: "fa-database" },
       { name: "SQLScript", type: "fa", icon: "fa-code" },
       { name: "Crystal Reports", type: "fa", icon: "fa-chart-bar" },
+      { name: "Odoo ERP", type: "img", icon: "https://cdn.simpleicons.org/odoo" },
     ],
   },
   {
