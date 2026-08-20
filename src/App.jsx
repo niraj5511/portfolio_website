@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -9,6 +10,12 @@ import NotFound from "./pages/NotFound.jsx";
 import CgpaCalculator from "./pages/CgpaCalculator.jsx";
 
 function App() {
+  // tell the preloader in index.html that React has rendered, so it can
+  // advance its progress bar (see the inline controller there)
+  useEffect(() => {
+    window.__preloader?.appReady();
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollManager />
