@@ -4,11 +4,14 @@
   flex-wrap: wrap;
   gap: 1.5rem;
   min-height: 100vh;
+  /* svh excludes the mobile address bar; browsers that don't know it keep the
+     100vh line above */
+  min-height: 100svh;
   align-items: center;
 }
 .home #particles-js {
   position: absolute;
-  background-color: #ffffff;
+  background-color: var(--surface);
   top: 0;
   left: 0;
   height: 100%;
@@ -22,15 +25,19 @@
 .home .image {
   flex: 1 1 40rem;
   z-index: 1;
+  /* centres the photo in its cell below 992px — see the note on the offset
+     in the min-width query at the bottom of this file */
+  text-align: center;
 }
 .home .image img {
   width: 70%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  margin-left: 18rem;
   border-radius: 50%;
   cursor: pointer;
   padding: 1rem;
+  /* decorative gradient and glow: reads correctly on both themes, so these
+     stay literal rather than becoming tokens */
   background: linear-gradient(45deg, #00c6ff, #00b3e6, #0099cc);
   border: 2px solid #f4e300;
   box-shadow:
@@ -39,27 +46,29 @@
     0 0 30px rgba(0, 179, 230, 0.5);
 }
 .home .image img:hover {
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 10px var(--shadow-color);
 }
 .home .content h2 {
-  font-size: 5rem;
+  /* caps at the original 5rem from ~890px up, so the desktop size is
+     unchanged; below that it scales instead of overflowing a 360px phone */
+  font-size: clamp(3.2rem, 9vw, 5rem);
   font-weight: 800;
-  color: #1a1a2e;
+  color: var(--text);
 }
 .home .content h2 span {
-  font-size: 5rem;
+  font-size: inherit;
   font-weight: 800;
-  color: #ff7b00;
+  color: var(--accent-alt);
 }
 .home .content p {
-  font-size: 2.5rem;
-  color: #0052cc;
+  font-size: clamp(1.9rem, 5vw, 2.5rem);
+  color: var(--accent);
   font-weight: 600;
   padding: 1rem 0;
 }
 .home .content p span {
-  font-size: 2.5rem;
-  color: #ff7b00;
+  font-size: inherit;
+  color: var(--accent-alt);
   font-weight: 600;
   padding: 1rem 0;
 }
@@ -70,12 +79,12 @@
   padding: 1.6rem 3rem;
   border-radius: 4em;
   transition: 0.4s ease;
-  color: #ffffff;
-  background: #0052cc;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
+  box-shadow: 0 4px 12px var(--shadow-color);
   font-family: "Nunito", sans-serif;
   z-index: 2;
-  border: 1px solid #0077ff;
+  border: 1px solid var(--btn-primary-border);
 }
 .home .btn span {
   font-weight: 700;
@@ -88,7 +97,7 @@
   transition: transform 0.3s ease;
 }
 .home .btn:hover {
-  background: #003d99;
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-2px);
 }
 .home .btn:hover i {
@@ -113,8 +122,10 @@
   font-size: 2rem;
   display: inline-block;
   line-height: 44px;
+  /* cyan on near-black: already a dark-on-dark chip in light mode, so it needs
+     no theme variant beyond the surface token */
   color: #00d9ff;
-  background-color: #09011b;
+  background-color: var(--social-bg);
   width: 44px;
   height: 44px;
   text-align: center;
@@ -143,7 +154,31 @@
   background-color: #e1306c;
 }
 
-@media (max-width: 450px) {
+/* Desktop only. This 18rem offset used to apply at every width: the 450px
+   query adjusted margin-top but never reset it, so on a 400px screen roughly
+   45px of the photo sat outside the viewport, hidden by html { overflow-x:
+   hidden }. Scoping it here preserves the desktop layout exactly. */
+@media (min-width: 992px) {
+  .home .image {
+    text-align: left;
+  }
+  .home .image img {
+    margin-left: 18rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    /* the absolutely-positioned .btn needs the stack to start below the
+       fixed header once content is single-column */
+    padding-top: 8rem;
+  }
+  .home .image img {
+    width: min(70%, 32rem);
+  }
+}
+
+@media (max-width: 480px) {
   .home .btn {
     margin: 4rem 0;
   }
@@ -151,10 +186,7 @@
     margin-top: 12rem;
   }
   .home .image img {
-    margin-top: -12rem;
-  }
-  .home .content p,
-  .home .content p span {
-    font-size: 2.2rem;
+    margin-top: -6rem;
+    width: min(80%, 28rem);
   }
 }

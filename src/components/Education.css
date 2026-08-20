@@ -1,5 +1,5 @@
 .education {
-  background: #e5ecfb;
+  background: var(--surface-3);
   min-height: 80vh;
 }
 .education .qoute {
@@ -8,6 +8,7 @@
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   margin-top: 0.5rem;
+  color: var(--text);
 }
 .education .box-container {
   display: flex;
@@ -21,17 +22,13 @@
   flex-direction: row;
   width: 80%;
   border-radius: 0.5rem;
-  box-shadow: 0.2rem 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0.2rem 0.5rem 1rem var(--shadow-color);
   text-align: center;
   position: relative;
   margin-top: 2rem;
   overflow: hidden;
   transition: 0.3s;
-  background: rgb(252, 252, 252);
-}
-.education .box-container .box:hover {
-  transform: scale(1.03);
-  box-shadow: 1rem 0.5rem 1.2rem rgba(0, 0, 0, 0.3);
+  background: var(--surface-raised);
 }
 .education .box-container .box .image {
   flex: 1 1 20rem;
@@ -53,7 +50,7 @@
 }
 .education .box-container .box .content h3 {
   font-size: 2.5rem;
-  color: #012970;
+  color: var(--heading-navy);
   padding: 0.5rem 0;
   font-weight: 600;
   text-align: left;
@@ -63,17 +60,37 @@
   font-size: 1.5rem;
   margin-left: 1rem;
   text-align: left;
+  color: var(--text);
 }
 .education h4 {
   font-size: 2rem;
-  color: rgb(34, 109, 0);
+  color: var(--success-text);
   text-align: left;
   margin: 1rem;
   font-family: "Nunito", sans-serif;
   font-weight: 700;
 }
 
-@media screen and (max-width: 600px) {
+/* college.png and school.png are logos drawn on white. On a darkened card that
+   cell becomes a glaring white block, so in dark mode it is treated as a
+   deliberate light "logo plate" with a visible seam against the card body.
+   Deliberately NOT inverted or filtered — that mangles brand colours. */
+html[data-theme="dark"] .education .box-container .box .image {
+  background: #eef1f6;
+  border-right: 1px solid var(--border);
+}
+
+@media (hover: hover) {
+  .education .box-container .box:hover {
+    transform: scale(1.03);
+    box-shadow: 1rem 0.5rem 1.2rem var(--shadow-color);
+  }
+}
+
+/* Raised from 600px to 768px: the row's 20rem + 70rem flex bases could not both
+   be honoured on a tablet, so the image cell collapsed while still sitting
+   beside the text. */
+@media screen and (max-width: 768px) {
   .education .box-container .box {
     flex-direction: column;
     width: 100%;
@@ -92,5 +109,24 @@
     padding: 1rem;
     flex-wrap: wrap;
     flex: 0;
+  }
+  /* the seam follows the stack direction */
+  html[data-theme="dark"] .education .box-container .box .image {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .education .box-container .box .content h3 {
+    font-size: 2rem;
+    margin-left: 0;
+  }
+  .education .box-container .box .content p {
+    margin-left: 0;
+  }
+  .education h4 {
+    font-size: 1.8rem;
+    margin: 1rem 0;
   }
 }

@@ -1,13 +1,13 @@
 .projects-page {
-  background: #ffffff;
+  background: var(--surface);
   margin-top: 5rem;
 }
 .projects-page h2 {
-  color: #1a1a2e;
+  color: var(--text);
   padding: 1rem;
 }
 .projects-page .heading span {
-  color: #ff7b00;
+  color: var(--accent-alt);
 }
 .projects-page .button-group {
   display: flex;
@@ -22,20 +22,22 @@
   outline: none;
   padding: 1rem 2rem;
   background: transparent;
-  color: #1a1a2e;
-  border: 1px solid #1a1a2e;
+  color: var(--text);
+  border: 1px solid var(--text);
   border-radius: 3px;
   cursor: pointer;
   font-weight: 500;
+  /* filter chips are tap targets */
+  min-height: 4.4rem;
 }
 .projects-page .button-group .btn:hover {
-  background-color: #1a1a2e;
-  color: #fff;
+  background-color: var(--text);
+  color: var(--surface);
 }
 .projects-page .button-group .btn.is-checked {
-  background-color: #0052cc;
-  border-color: #0052cc;
-  color: #fff;
+  background-color: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
 }
 .projects-page .box-container {
   display: flex;
@@ -46,7 +48,7 @@
 .projects-page .box-container .box {
   flex: 1 1 30rem;
   border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
   position: relative;
   overflow: hidden;
   height: 30rem;
@@ -62,7 +64,7 @@
   position: absolute;
   top: 85%;
   left: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--overlay);
   display: flex;
   flex-direction: column;
 }
@@ -74,15 +76,29 @@
   height: 4.5rem;
   width: 100%;
   padding-left: 1rem;
+  /* theme-invariant yellow, so its text is pinned dark instead of inherited */
   background: #ffd900;
 }
 .projects-page .box-container .box .content .tag h3 {
   font-size: 2rem;
   color: #1a1a2e;
 }
-.projects-page .box-container .box:hover .content {
+
+/* Same reasoning as Work.css: hover is gated on the input device, and touch
+   gets an explicit tap-to-reveal, because this slide-up is the only route to
+   the description and the View/Code buttons. */
+@media (hover: hover) {
+  .projects-page .box-container .box:hover .content {
+    top: 25%;
+  }
+}
+.projects-page .box-container .box.is-revealed .content {
   top: 25%;
 }
+.projects-page .box-container .box:focus-within .content {
+  top: 25%;
+}
+
 .projects-page .desc {
   margin: 2rem;
   display: flex;
@@ -91,23 +107,25 @@
 }
 .projects-page .desc p {
   font-size: 1.5rem;
-  color: #1a1a2e;
+  color: var(--text);
 }
 .projects-page .desc .btns {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
   width: 100%;
   margin-top: 2rem;
 }
 .projects-page .desc .btns .btn {
   line-height: 0;
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 1.5rem 2.5rem;
   border-radius: 0.5rem;
   font-size: 1.5rem;
   color: #fff;
-  background: rgb(12, 12, 12);
-  margin-right: 2rem;
+  background: var(--btn-dark);
 }
 .projects-page .desc .btns .btn:hover {
   background: #310ae0f5;
@@ -125,9 +143,9 @@
   padding: 1.6rem 3rem;
   border-radius: 0.5em;
   transition: 0.3s;
-  color: #fff;
-  background: #0052cc;
-  border: 2px solid #0052cc;
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
+  border: 2px solid var(--btn-primary-bg);
   box-shadow: 0px 2px 4px rgba(0, 82, 204, 0.3);
   text-align: center;
   display: inline-flex;
@@ -144,18 +162,40 @@
   transition: 0.3s;
 }
 .backbtn .btn:hover {
-  background: #fff;
-  color: #0052cc;
+  background: var(--surface);
+  color: var(--accent);
 }
 .backbtn .btn:hover i {
   transform: translateX(-8px);
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 768px) {
   .projects-page .button-group {
     width: 100%;
   }
   .projects-page .box-container {
-    margin: 0rem;
+    margin: 2rem 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .projects-page .box-container {
+    margin: 1.5rem 0;
+  }
+  .projects-page .box-container .box {
+    height: 26rem;
+  }
+  .projects-page .button-group .btn {
+    padding: 1rem 1.5rem;
+    font-size: 1.4rem;
+  }
+  .projects-page .desc {
+    margin: 1.5rem;
+  }
+  .projects-page .desc p {
+    font-size: 1.4rem;
+  }
+  .projects-page .desc .btns .btn {
+    padding: 1.3rem 2rem;
   }
 }

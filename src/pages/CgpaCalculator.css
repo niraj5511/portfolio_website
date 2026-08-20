@@ -1,13 +1,17 @@
 .cgpa-calculator {
-  background: #ffffff;
+  background: var(--surface);
   min-height: 90vh;
+  min-height: 90svh;
+  /* this page starts at the very top of the document, so without this its
+     heading sat behind the fixed 6.5rem header */
+  padding-top: 9rem;
 }
 .cgpa-calculator .heading span {
-  color: #ff7b00;
+  color: var(--accent-alt);
 }
 .cgpa-subtitle {
   text-align: center;
-  color: #0052cc;
+  color: var(--accent);
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 1.6rem;
@@ -19,18 +23,21 @@
 }
 
 .cgpa-card {
-  background: #f7f9fc;
-  border: 1px solid #e5ecfb;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 1rem;
   padding: 1.8rem;
   position: relative;
   margin-bottom: 2rem;
 }
 .cgpa-card h3 {
-  color: #1a1a2e;
+  color: var(--text);
   font-size: 1.9rem;
   margin-bottom: 1rem;
 }
+/* The status colours below (#ef4444 red, #22c55e / #16a34a green, #f59e0b amber,
+   #7c3aed violet) are deliberately theme-invariant: they carry meaning, they
+   read on either background, and recolouring them would weaken the signal. */
 .remove-sem {
   position: absolute;
   top: 1rem;
@@ -57,9 +64,9 @@
   padding: 0.8rem;
   font-size: 1.4rem;
   border-radius: 0.5rem;
-  border: 1px solid #ccd6ea;
-  background: #ffffff;
-  color: #1a1a2e;
+  border: 1px solid var(--border-input);
+  background: var(--input-bg-solid);
+  color: var(--text);
 }
 .cgpa-row button {
   padding: 0.8rem 1.2rem;
@@ -89,7 +96,7 @@
 }
 .dept-row label {
   font-size: 1.4rem;
-  color: #1a1a2e;
+  color: var(--text);
   font-weight: 600;
 }
 .dept-row select {
@@ -98,7 +105,11 @@
   padding: 0.8rem;
   font-size: 1.4rem;
   border-radius: 0.5rem;
-  border: 1px solid #ccd6ea;
+  border: 1px solid var(--border-input);
+  /* this select previously set no background or colour, so it fell back to the
+     UA's white-on-black — unreadable once the page darkens */
+  background: var(--input-bg-solid);
+  color: var(--text);
 }
 .autofill-btn {
   background: #7c3aed;
@@ -113,13 +124,16 @@
 .sem-result {
   margin-top: 1rem;
   font-size: 1.4rem;
-  color: #0052cc;
+  color: var(--accent);
   font-weight: 600;
 }
 
 .cgpa-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  /* min(420px, 100%) rather than a flat 420px: a bare minimum overflows any
+     viewport narrower than the track, which is what forced the single-column
+     media query below to exist */
+  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
   gap: 1.5rem;
 }
 
@@ -142,7 +156,7 @@
   font-family: "Nunito", sans-serif;
 }
 .add-btn {
-  background: #0052cc;
+  background: var(--btn-primary-bg);
 }
 .download-btn {
   background: #16a34a;
@@ -155,15 +169,15 @@
 .final-result {
   text-align: center;
   font-size: 2rem;
-  color: #1a1a2e;
-  background: #eaf3ff;
-  border: 1px solid #cfe2ff;
+  color: var(--text);
+  background: var(--surface-info);
+  border: 1px solid var(--border-info);
   border-radius: 1rem;
   padding: 1.5rem;
   margin: 2rem 0;
 }
 .final-result strong {
-  color: #0052cc;
+  color: var(--accent);
 }
 
 .cgpa-about {
@@ -172,12 +186,12 @@
   text-align: center;
 }
 .cgpa-about h3 {
-  color: #1a1a2e;
+  color: var(--text);
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 .cgpa-about p {
-  color: #555;
+  color: var(--text-muted);
   font-size: 1.5rem;
   line-height: 2.2rem;
 }
@@ -193,8 +207,8 @@
   gap: 0.8rem;
   padding: 1.4rem 2.8rem;
   border-radius: 0.5em;
-  color: #fff;
-  background: #0052cc;
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 1.6rem;
@@ -202,12 +216,44 @@
   transition: all 0.3s ease;
 }
 .backbtn .btn:hover {
-  background: #003d99;
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-2px);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .cgpa-grid {
     grid-template-columns: 1fr;
+  }
+  .cgpa-card {
+    padding: 1.5rem;
+  }
+  /* the remove-semester button and the card title were colliding */
+  .cgpa-card h3 {
+    padding-right: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 16px minimum stops iOS Safari zooming the page in on focus */
+  .cgpa-row input,
+  .cgpa-row select,
+  .dept-row select {
+    font-size: 16px;
+  }
+  .cgpa-row button {
+    /* the +/- buttons need a real tap target once they are the only way to edit
+       a semester on a phone */
+    min-height: 4rem;
+  }
+  .cgpa-actions {
+    gap: 1rem;
+  }
+  .add-btn,
+  .download-btn {
+    flex: 1 1 100%;
+    padding: 1.4rem 2rem;
+  }
+  .final-result {
+    font-size: 1.7rem;
   }
 }

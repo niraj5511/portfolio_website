@@ -1,16 +1,16 @@
 .work {
-  background: #ffffff;
+  background: var(--surface);
 }
 .work h2 {
-  color: #1a1a2e;
+  color: var(--text);
   padding: 1rem;
 }
 .work .heading span {
-  color: #ff7b00;
+  color: var(--accent-alt);
 }
 .work .quote {
   font-size: 1.75rem;
-  color: #0052cc;
+  color: var(--accent);
   text-align: center;
   font-family: "Nunito", sans-serif;
   font-weight: 700;
@@ -25,7 +25,7 @@
 .work .box-container .box {
   flex: 1 1 30rem;
   border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.5rem 1rem var(--shadow-color);
   position: relative;
   overflow: hidden;
   height: 30rem;
@@ -41,7 +41,7 @@
   position: absolute;
   top: 85%;
   left: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--overlay);
   display: flex;
   flex-direction: column;
 }
@@ -53,15 +53,33 @@
   height: 4.5rem;
   width: 100%;
   padding-left: 1rem;
+  /* the yellow tag is theme-invariant, so its text is pinned dark rather than
+     inherited from body */
   background: #ffd900;
 }
 .work .box-container .box .content .tag h3 {
   font-size: 2rem;
   color: #1a1a2e;
 }
-.work .box-container .box:hover .content {
+
+/* Reveal-on-hover is gated on the INPUT DEVICE, not the viewport width, so a
+   touchscreen laptop behaves sensibly. Without the gate, the description and
+   both buttons were unreachable on every phone and tablet — tap-to-reveal below
+   is the only way in there. */
+@media (hover: hover) {
+  .work .box-container .box:hover .content {
+    top: 25%;
+  }
+}
+.work .box-container .box.is-revealed .content {
   top: 25%;
 }
+/* keyboard users: tabbing onto the View/Code links opens the card that owns
+   them, so the focus ring is never sitting on something invisible */
+.work .box-container .box:focus-within .content {
+  top: 25%;
+}
+
 .work .desc {
   margin: 2rem;
   display: flex;
@@ -70,23 +88,26 @@
 }
 .work .desc p {
   font-size: 1.5rem;
-  color: #1a1a2e;
+  color: var(--text);
 }
 .work .desc .btns {
   display: flex;
-  justify-content: space-between;
+  /* wraps instead of forcing both buttons onto one line on a narrow card */
+  flex-wrap: wrap;
+  gap: 1rem;
   width: 100%;
   margin-top: 2rem;
 }
 .work .desc .btns .btn {
   line-height: 0;
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 1.5rem 2.5rem;
   border-radius: 0.5rem;
   font-size: 1.5rem;
   color: #fff;
-  background: rgb(12, 12, 12);
-  margin-right: 2rem;
+  background: var(--btn-dark);
 }
 .work .desc .btns .btn:hover {
   background: #310ae0f5;
@@ -101,10 +122,10 @@
   padding: 1.6rem 3rem;
   border-radius: 0.5em;
   transition: 0.5s;
-  color: #fff;
+  color: var(--btn-primary-text);
   font-weight: 700;
-  background: #0052cc;
-  border: 2px solid #0052cc;
+  background: var(--btn-primary-bg);
+  border: 2px solid var(--btn-primary-bg);
   box-shadow: 0px 5px 10px rgba(0, 82, 204, 0.3);
   text-align: center;
 }
@@ -119,9 +140,39 @@
   transition: 0.3s;
 }
 .work .viewall .btn:hover {
-  background: #fff;
-  color: #0052cc;
+  background: var(--surface);
+  color: var(--accent);
 }
 .work .viewall .btn:hover i {
   transform: translateX(5px);
+}
+
+/* This file had no media queries at all. The card grid coped by virtue of
+   flex-wrap, but the 2rem container margin stacked on top of the section gutter
+   and ate most of a 360px screen. */
+@media screen and (max-width: 768px) {
+  .work .box-container {
+    margin: 2rem 0;
+  }
+  .work .quote {
+    font-size: 1.6rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .work .box-container .box {
+    height: 26rem;
+  }
+  .work .desc {
+    margin: 1.5rem;
+  }
+  .work .desc p {
+    font-size: 1.4rem;
+  }
+  .work .desc .btns {
+    margin-top: 1.5rem;
+  }
+  .work .desc .btns .btn {
+    padding: 1.3rem 2rem;
+  }
 }

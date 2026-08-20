@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Work.css";
 import VanillaTilt from "vanilla-tilt";
 import { Link } from "react-router-dom";
+import { isTouchDevice } from "../utils/pointer.js";
 
 import secureShieldImg from "../assets/secureshield.png";
 // import nepseImg from "../assets/nepse-predictor.png";
@@ -49,12 +50,23 @@ const projects = [
 
 const Work = () => {
   const containerRef = useRef(null);
+  // Which card is open on touch. Null means all closed. Hover handles this on
+  // pointer devices, so the tap handler is only wired up where hover never
+  // fires — otherwise a desktop click would leave a card stuck open.
+  const [revealed, setRevealed] = useState(null);
+  const [touch] = useState(isTouchDevice);
 
-  // tilt-on-hover effect for every project card
+  // tilt-on-hover effect for every project card.
+  // Skipped on touch: there is no hover to respond to, and vanilla-tilt's
+  // gyroscope option defaults to TRUE, so the cards tilted with the phone's
+  // orientation sensor and fought the tap-to-reveal below.
   useEffect(() => {
+    if (touch) return;
     const tiltElements = containerRef.current.querySelectorAll(".tilt");
-    VanillaTilt.init(tiltElements, { max: 10 });
-  }, []);
+    VanillaTilt.init(tiltElements, { max: 10, gyroscope: false });
+    return () =>
+      tiltElements.forEach((el) => el.vanillaTilt && el.vanillaTilt.destroy());
+  }, [touch]);
 
   return (
     <section className="work" id="work">
@@ -65,7 +77,18 @@ const Work = () => {
 
       <div className="box-container" ref={containerRef}>
         {projects.map((project) => (
-          <div className="box tilt" key={project.name}>
+          <div
+            className={`box tilt ${revealed === project.name ? "is-revealed" : ""}`}
+            key={project.name}
+            onClick={
+              touch
+                ? () =>
+                    setRevealed((current) =>
+                      current === project.name ? null : project.name,
+                    )
+                : undefined
+            }
+          >
             <img draggable="false" src={project.image} alt={project.name} />
             <div className="content">
               <div className="tag">
@@ -79,6 +102,9 @@ const Work = () => {
                     className="btn"
                     target="_blank"
                     rel="noreferrer"
+                    /* without this the tap bubbles to the card and collapses it
+                       out from under the link that was just pressed */
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <i className="fas fa-eye"></i> View
                   </a>
@@ -87,6 +113,7 @@ const Work = () => {
                     className="btn"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     Code <i className="fas fa-code"></i>
                   </a>

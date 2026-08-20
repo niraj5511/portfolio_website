@@ -1,6 +1,167 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap");
 
+/*
+  DESIGN TOKENS
+  =============
+  Every light value below is the exact literal that was previously hardcoded in
+  the component stylesheets, so the light theme renders identically to before
+  this refactor. Near-duplicate blues (#0052cc / #011aff / #2506ad / #00308f /
+  #012970) are kept as SEPARATE tokens for that reason — merging them would be
+  a silent redesign, not a refactor.
+
+  The dark column reuses the palette already chosen for the preloader's dark
+  variant in index.html (#12121e / #e9e9f2 / #4ea1ff / #ffb057 / #b57bff), so
+  the loading screen and the site agree.
+
+  Theming keys off `data-theme` on <html>, never a `.dark` class: Skills.css
+  already uses `.skill-card.dark` to mean "the dark-coloured SAP card", which
+  stays dark in BOTH themes.
+*/
+:root {
+  color-scheme: light;
+
+  /* surfaces */
+  --bg: #f7f7f7;
+  --surface: #ffffff;
+  --surface-2: #f7f9fc;
+  --surface-3: #e5ecfb;
+  --surface-raised: rgb(252, 252, 252);
+  --surface-info: #eaf3ff;
+  --overlay: rgba(255, 255, 255, 0.95);
+  --input-bg: #e5ecfb;
+  --input-bg-solid: #ffffff;
+
+  /* text */
+  --text: #1a1a2e;
+  --text-heading: rgb(32, 32, 32);
+  --text-muted: #555;
+  --text-strong: rgb(51, 51, 51);
+  --text-deep: #020133;
+  --text-nav: #0e2431;
+
+  /* brand accents */
+  --accent: #0052cc;
+  --accent-alt: #ff7b00;
+  --accent-purple: rgb(115, 3, 167);
+  --accent-vivid: #011aff;
+  --accent-deep: #00308f;
+  --heading-navy: #012970;
+
+  /* borders */
+  --border: #e5ecfb;
+  --border-input: #ccd6ea;
+  --border-input-strong: rgb(51, 51, 51);
+  --border-info: #cfe2ff;
+
+  /* filled buttons. Separate from --accent because --accent is used as a TEXT
+     colour too: in dark mode it has to be light enough to read on --bg, which
+     makes it far too pale to sit behind white button text. */
+  --btn-primary-bg: #0052cc;
+  --btn-primary-bg-hover: #003d99;
+  --btn-primary-border: #0077ff;
+  --btn-primary-text: #ffffff;
+
+  /* the indigo Resume / Calculate buttons */
+  --btn-indigo-bg: #2506ad;
+  --btn-indigo-bg-hover: #1a047e;
+
+  /* one-offs */
+  --footer-bg: rgb(0, 1, 43);
+  --scrollbar-track: rgb(235, 202, 245);
+  --scrollbar-thumb: #420177;
+  --nav-mobile-bg: #0e0f31;
+  --social-bg: #09011b;
+  --btn-dark: rgb(12, 12, 12);
+  --success-text: rgb(34, 109, 0);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-nav: rgba(146, 161, 176, 0.3);
+
+  /* mylogo3.png is charcoal ink (~#333) on transparency, which lands within a
+     few percent of the dark --surface and effectively disappears there. The
+     dark value below repaints it; light mode needs no correction. */
+  --logo-filter: none;
+
+  /* layout */
+  --content-max: 1400px;
+  /*
+    Stays at the 9% every section used before the token refactor, so horizontal
+    placement is unchanged at every width you'd actually browse at. A clamped
+    value was wrong here: capping it at 4rem cut the gutter from ~121px to 40px
+    on a 1351px window, which slid the hero and contact content left.
+
+    Paired with the max() in `section` below, 9% wins up to 1707px — that is
+    where 0.09W equals (W - 1400) / 2 — and the centring margin wins above it,
+    so the two meet exactly at a 1400px content column with no jump.
+  */
+  --gutter: 9%;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #12121e;
+  --surface: #191926;
+  --surface-2: #1e1e2d;
+  --surface-3: #171724;
+  --surface-raised: #20202f;
+  --surface-info: #1a2438;
+  --overlay: rgba(25, 25, 38, 0.96);
+  --input-bg: #1e1e2d;
+  --input-bg-solid: #171726;
+
+  --text: #e9e9f2;
+  --text-heading: #f2f2f8;
+  --text-muted: #a0a0b8;
+  --text-strong: #c4c4d6;
+  --text-deep: #dfe6ff;
+  --text-nav: #d8d8e6;
+
+  --accent: #4ea1ff;
+  --accent-alt: #ffb057;
+  --accent-purple: #b57bff;
+  --accent-vivid: #6f86ff;
+  --accent-deep: #7fb0ff;
+  --heading-navy: #8fc0ff;
+
+  --border: #2a2a3d;
+  --border-input: #33334a;
+  --border-input-strong: #4a4a63;
+  --border-info: #2b3a56;
+
+  --btn-primary-bg: #1f5fd6;
+  --btn-primary-bg-hover: #2d74f0;
+  --btn-primary-border: #4a8cf7;
+  --btn-primary-text: #ffffff;
+
+  --btn-indigo-bg: #4b3fd0;
+  --btn-indigo-bg-hover: #5f52e6;
+
+  --footer-bg: #0d0d16;
+  --scrollbar-track: #1c1c2b;
+  --scrollbar-thumb: #4a4a68;
+  --social-bg: #1d1d2e;
+  --btn-dark: #2a2a3d;
+  --success-text: #6ee7a0;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-nav: rgba(0, 0, 0, 0.5);
+
+  /* brightness(0) flattens every opaque pixel to black, invert(1) lifts it to
+     white, and the trailing brightness settles it at #ebebeb so the mark reads
+     as --text rather than glaring pure white. Alpha survives all three steps,
+     so the transparent background stays transparent and the anti-aliased edges
+     stay soft instead of fringing dark.
+
+     Deliberately monochrome: the gold sun cannot be preserved by any filter
+     chain, because invert() maps light yellow to a DARK blue (#0a3ebd) and
+     hue-rotate(180deg) cannot restore the lost lightness — it lands on burnt
+     brown (#6e3a00), which is muddier on --surface than the original problem.
+     A white sunburst still reads as a sun; a muddy one does not. To keep the
+     gold in dark mode, export a light-variant PNG and swap the src on theme
+     instead of filtering. */
+  --logo-filter: brightness(0) invert(1) brightness(0.92);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,10 +176,20 @@ html {
   font-size: 62.5%;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  /* The header is fixed and 6.5rem tall, so anchor jumps (/#skills, /#work) and
+     ScrollManager's scrollIntoView both landed with the section heading tucked
+     underneath it. scroll-padding-top offsets every scroll-into-view against the
+     scrolling box, which covers both cases in one line. */
+  scroll-padding-top: 8rem;
 }
 
 body {
-  background: #f7f7f7;
+  background: var(--bg);
+  /* Previously unset, so everything fell back to the browser's black. That
+     cannot work for dark mode. Anything sitting on a fixed-colour surface (the
+     orange timeline card, the yellow project tags) now pins its own dark text
+     explicitly, since it can no longer inherit black. */
+  color: var(--text);
   font-family: "Poppins", sans-serif;
 }
 
@@ -31,25 +202,38 @@ html::-webkit-scrollbar {
   width: 0.8rem;
 }
 html::-webkit-scrollbar-track {
-  background: rgb(235, 202, 245);
+  background: var(--scrollbar-track);
 }
 html::-webkit-scrollbar-thumb {
-  background: #420177;
+  background: var(--scrollbar-thumb);
 }
 
-/* every section shares this base spacing */
+/*
+  Every section shares this base spacing.
+
+  The horizontal padding keeps `section` full-bleed (so the background colours
+  on .skills / .education / .work / .contact / .footer still reach both screen
+  edges) while centring its CONTENT inside --content-max. Below that width the
+  max() resolves to --gutter; above it, to the margin needed to centre the
+  column. This replaces a flat `9%`, which had no upper bound — on a 2560px
+  display paragraphs ran ~2100px wide — and was simultaneously too tight on a
+  360px phone.
+*/
 section {
   min-height: 100vh;
-  padding: 2rem 9%;
+  /* svh excludes the mobile URL bar, so sections are not taller than the
+     visible viewport on iOS Safari. Older browsers keep the 100vh above. */
+  min-height: 100svh;
+  padding: 2rem max(var(--gutter), (100% - var(--content-max)) / 2);
 }
 
 /* every section heading (e.g. "Who I Am", "Skills & Abilities") shares this */
 .heading {
   font-size: 3.5rem;
-  color: rgb(32, 32, 32);
+  color: var(--text-heading);
   font-weight: 800;
   text-align: center;
 }
 .heading span {
-  color: rgb(115, 3, 167);
+  color: var(--accent-purple);
 }

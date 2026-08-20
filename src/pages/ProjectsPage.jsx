@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import VanillaTilt from "vanilla-tilt";
 import "./ProjectsPage.css";
+import { isTouchDevice } from "../utils/pointer.js";
 
 import secureShieldImg from "../assets/secureshield.png";
 // import nepseImg from "../assets/nepse-predictor.png";
@@ -48,6 +49,8 @@ const filters = [
 
 const ProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState("*");
+  const [revealed, setRevealed] = useState(null);
+  const [touch] = useState(isTouchDevice);
   const containerRef = useRef(null);
 
   const filteredProjects =
@@ -55,11 +58,28 @@ const ProjectsPage = () => {
       ? allProjects
       : allProjects.filter((p) => p.category === activeFilter);
 
-  // re-run tilt whenever the filtered list changes, since new cards mount
+  // Re-run tilt whenever the filter changes, since new cards mount.
+  // Keyed on activeFilter rather than the filteredProjects array: that array is
+  // rebuilt on every render, so the effect used to fire for unrelated state
+  // changes too.
+  // The cleanup matters here in a way it didn't before: cards that SURVIVE a
+  // filter change were being re-initialised without the previous instance being
+  // torn down, stacking a duplicate set of listeners on every filter click.
+  // gyroscope defaults to true, so it is also switched off, and skipped
+  // entirely on touch where there is no hover to respond to.
   useEffect(() => {
+    if (touch) return;
     const tiltElements = containerRef.current.querySelectorAll(".tilt");
-    VanillaTilt.init(tiltElements, { max: 15 });
-  }, [filteredProjects]);
+    tiltElements.forEach((el) => el.vanillaTilt && el.vanillaTilt.destroy());
+    VanillaTilt.init(tiltElements, { max: 15, gyroscope: false });
+    return () =>
+      tiltElements.forEach((el) => el.vanillaTilt && el.vanillaTilt.destroy());
+  }, [activeFilter, touch]);
+
+  // a card left open would stay open behind a different filter
+  useEffect(() => {
+    setRevealed(null);
+  }, [activeFilter]);
 
   return (
     <section className="projects-page" id="work">
@@ -81,7 +101,18 @@ const ProjectsPage = () => {
 
       <div className="box-container" ref={containerRef}>
         {filteredProjects.map((project) => (
-          <div className="box tilt" key={project.name}>
+          <div
+            className={`box tilt ${revealed === project.name ? "is-revealed" : ""}`}
+            key={project.name}
+            onClick={
+              touch
+                ? () =>
+                    setRevealed((current) =>
+                      current === project.name ? null : project.name,
+                    )
+                : undefined
+            }
+          >
             <img draggable="false" src={project.image} alt={project.name} />
             <div className="content">
               <div className="tag">
@@ -90,10 +121,24 @@ const ProjectsPage = () => {
               <div className="desc">
                 <p>{project.desc}</p>
                 <div className="btns">
-                  <a href={project.links.view} className="btn" target="_blank" rel="noreferrer">
+                  <a
+                    href={project.links.view}
+                    className="btn"
+                    target="_blank"
+                    rel="noreferrer"
+                    /* keeps the tap from bubbling up and collapsing the card
+                       out from under the link just pressed */
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <i className="fas fa-eye"></i> View
                   </a>
-                  <a href={project.links.code} className="btn" target="_blank" rel="noreferrer">
+                  <a
+                    href={project.links.code}
+                    className="btn"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     Code <i className="fas fa-code"></i>
                   </a>
                 </div>

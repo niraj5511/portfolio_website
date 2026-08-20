@@ -8,10 +8,22 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.7rem 10%;
+  padding: 1.7rem max(var(--gutter), (100% - var(--content-max)) / 2);
   height: 6.5rem;
-  background-color: #ffffff;
-  box-shadow: 0 1px 4px rgba(146, 161, 176, 0.3);
+  background-color: var(--surface);
+  box-shadow: 0 1px 4px var(--shadow-nav);
+}
+
+header .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+/* Themed in index.css: `none` in light, a repaint-to-near-white chain in dark.
+   The global `* { transition: all }` already eases the swap on toggle. */
+header > a img {
+  filter: var(--logo-filter);
 }
 
 header .navbar ul {
@@ -25,7 +37,7 @@ header .navbar li {
 }
 header .navbar ul li a {
   font-size: 1.57rem;
-  color: #0e2431;
+  color: var(--text-nav);
   font-weight: 600;
   text-decoration: none;
   letter-spacing: 0.04rem;
@@ -33,17 +45,42 @@ header .navbar ul li a {
 }
 header .navbar ul li a.active,
 header .navbar ul li a:hover {
-  color: #011aff;
-  border-bottom: 0.2rem solid #011aff;
+  color: var(--accent-vivid);
+  border-bottom: 0.2rem solid var(--accent-vivid);
   padding: 0.5rem 0;
 }
 /* navbar ends */
+
+/* theme toggle starts */
+.theme-toggle {
+  /* 44px square: the iOS minimum touch target */
+  width: 4.4rem;
+  height: 4.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-nav);
+  font-size: 1.9rem;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--surface-3);
+  color: var(--accent);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+/* theme toggle ends */
 
 /* hamburger icon starts */
 #menu {
   font-size: 3rem;
   cursor: pointer;
-  color: rgb(24, 2, 63);
+  color: var(--text);
   display: none;
 }
 @media (max-width: 768px) {
@@ -58,7 +95,7 @@ header .navbar ul li a:hover {
     height: 100%;
     text-align: left;
     align-items: flex-start;
-    background-color: #0e0f31;
+    background-color: var(--nav-mobile-bg);
   }
   header .navbar ul {
     flex-flow: column;
@@ -83,13 +120,30 @@ header .navbar ul li a:hover {
     padding: 1rem;
     color: #fff;
     border-radius: 0.5rem;
-    border-bottom: 0.5rem solid #011aff;
+    border-bottom: 0.5rem solid var(--accent-vivid);
   }
   .fa-times {
     transform: rotate(180deg);
   }
   header .navbar.nav-toggle {
     right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    height: 6rem;
+  }
+  /* must track the reduced header height above, or the panel floats */
+  header .navbar {
+    top: 6rem;
+  }
+  /* the logo is 132px wide; keep it from crowding the two controls */
+  header > a img {
+    width: 104px;
+  }
+  header .nav-right {
+    gap: 0.6rem;
   }
 }
 /* hamburger icon ends */

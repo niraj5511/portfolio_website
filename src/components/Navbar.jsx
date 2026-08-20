@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import mylogo from "../assets/mylogo3.png";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 const navLinks = [
   { to: "/#home", id: "home", label: "Home" },
@@ -14,6 +15,7 @@ const navLinks = [
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,27 +45,47 @@ const Navbar = () => {
         <img src={mylogo} width="132" alt="Niraj Bhusal logo" />
       </Link>
 
-      <div
-        id="menu"
-        className={`fas ${menuOpen ? "fa-times" : "fa-bars"}`}
-        onClick={() => setMenuOpen(!menuOpen)}
-      ></div>
+      {/* Grouped so the toggle and the hamburger stay together on the right.
+          On mobile .navbar is position:fixed and leaves the flow, which leaves
+          just these two controls in the header bar. */}
+      <div className="nav-right">
+        <nav className={`navbar ${menuOpen ? "nav-toggle" : ""}`}>
+          <ul>
+            {navLinks.map((link) => (
+              <li key={link.id}>
+                <Link
+                  to={link.to}
+                  className={activeSection === link.id ? "active" : ""}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-      <nav className={`navbar ${menuOpen ? "nav-toggle" : ""}`}>
-        <ul>
-          {navLinks.map((link) => (
-            <li key={link.id}>
-              <Link
-                to={link.to}
-                className={activeSection === link.id ? "active" : ""}
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        {/* Deliberately outside .navbar so it stays reachable at every width
+            instead of hiding behind the hamburger. */}
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={
+            theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+          }
+          aria-pressed={theme === "dark"}
+          title={theme === "dark" ? "Light mode" : "Dark mode"}
+        >
+          <i className={`fas ${theme === "dark" ? "fa-sun" : "fa-moon"}`}></i>
+        </button>
+
+        <div
+          id="menu"
+          className={`fas ${menuOpen ? "fa-times" : "fa-bars"}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+        ></div>
+      </div>
     </header>
   );
 };

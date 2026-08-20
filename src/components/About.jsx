@@ -2,13 +2,19 @@ import React, { useEffect, useRef } from "react";
 import "./About.css";
 import VanillaTilt from "vanilla-tilt";
 import aboutImg from "../assets/about.jpeg"; // swap to hero.jpeg if you don't have this yet
+import { isTouchDevice } from "../utils/pointer.js";
 
 const About = () => {
   const imageRef = useRef(null);
 
-  // tilt-on-hover effect, same as the Hero photo
+  // tilt-on-hover effect, same as the Hero photo — and skipped on touch for the
+  // same reason: no hover to respond to, and vanilla-tilt's gyroscope option
+  // defaults to TRUE, so the photo tilted with the phone's orientation sensor.
   useEffect(() => {
-    VanillaTilt.init(imageRef.current, { max: 15 });
+    if (isTouchDevice()) return;
+    const el = imageRef.current;
+    VanillaTilt.init(el, { max: 15, gyroscope: false });
+    return () => el?.vanillaTilt?.destroy();
   }, []);
 
   return (

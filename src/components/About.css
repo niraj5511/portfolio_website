@@ -16,6 +16,7 @@
   width: 28rem;
   height: auto;
   border-radius: 10px;
+  /* decorative magenta/cyan glow — reads on both themes, left literal */
   border: 2px solid rgba(255, 0, 180, 0.5);
   box-shadow:
     0 0 10px rgba(255, 0, 180, 0.3),
@@ -43,12 +44,12 @@
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #020133;
+  color: var(--text-deep);
 }
 
 .about .row .content .tag {
   font-size: 1.6rem;
-  color: #00308f;
+  color: var(--accent-deep);
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
@@ -59,6 +60,7 @@
   font-family: "Nunito", sans-serif;
   font-weight: 500;
   margin-bottom: 2rem;
+  color: var(--text);
 }
 
 .about .row .content .box-container {
@@ -73,7 +75,7 @@
 }
 
 .about .row .content .box-container .box p span {
-  color: #011aff;
+  color: var(--accent-vivid);
   font-weight: 600;
 }
 
@@ -85,8 +87,8 @@
 .resumebtn .btn {
   padding: 1.4rem 2.5rem;
   border-radius: 0.5em;
-  color: #fff;
-  background: #2506ad;
+  color: var(--btn-primary-text);
+  background: var(--btn-indigo-bg);
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 1.7rem;
@@ -104,7 +106,7 @@
 }
 
 .resumebtn .btn:hover {
-  background: #1a047e;
+  background: var(--btn-indigo-bg-hover);
   box-shadow: 0 6px 20px rgba(26, 4, 126, 0.5);
 }
 
@@ -112,8 +114,11 @@
   transform: translateX(6px);
 }
 
-/* about media queries */
-@media screen and (max-width: 600px) {
+/* about media queries.
+   Raised from 600px to 768px: between 601 and 767 the row was still trying to
+   sit side by side inside a 40rem flex basis, which forced the text column
+   into a very narrow measure. */
+@media screen and (max-width: 768px) {
   .about .row {
     padding: 2rem 1rem;
     margin-bottom: 5rem;
@@ -127,6 +132,7 @@
   .about .row .image img {
     width: 85%;
     margin: 0 auto;
+    /* no hover on touch, so the grayscale would never lift */
     filter: grayscale(0%);
   }
 
@@ -136,5 +142,17 @@
 
   .about .row .content .box-container {
     gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .about .row {
+    padding: 2rem 0;
+  }
+  .about .row .content {
+    padding: 1rem 0;
+  }
+  .about .row .content h3 {
+    font-size: 2.4rem;
   }
 }

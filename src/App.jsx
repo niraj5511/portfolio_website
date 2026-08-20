@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import ScrollTop from "./components/ScrollTop.jsx";
@@ -17,18 +18,20 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <ScrollManager />
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/cgpacalculator" element={<CgpaCalculator />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Footer />
-      <ScrollTop />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <ScrollManager />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/cgpacalculator" element={<CgpaCalculator />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Footer />
+        <ScrollTop />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

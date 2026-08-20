@@ -1,14 +1,14 @@
 .contact {
-  background: #e5ecfb;
+  background: var(--surface-3);
   min-height: 60vh;
 }
 .contact .container {
   max-width: 1050px;
   width: 100%;
-  background: #fff;
+  background: var(--surface);
   border-radius: 1.5rem;
   margin: 2rem 5rem;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 10px var(--shadow-color);
 }
 .contact .container .content {
   display: flex;
@@ -40,14 +40,18 @@
   height: 50px;
   display: flex;
   position: relative;
-  margin: 1rem;
+  /* was `margin: 1rem` alongside `width: 100%`. Margins sit outside border-box,
+     so every field was 100% + 2rem wide and overflowed its parent — invisible
+     on desktop behind the container's own padding, obvious once the form goes
+     full-width below 768px. */
+  margin: 1rem 0;
   width: 100%;
 }
 .contact form i {
   position: absolute;
   top: 50%;
   left: 18px;
-  color: rgb(51, 51, 51);
+  color: var(--text-strong);
   font-size: 17px;
   pointer-events: none;
   transform: translateY(-50%);
@@ -61,25 +65,28 @@
   font-size: 16px;
   font-family: "Poppins", sans-serif;
   border-radius: 5px;
-  border: 1px solid rgb(51, 51, 51);
-  background: #e5ecfb;
+  border: 1px solid var(--border-input-strong);
+  background: var(--input-bg);
+  /* inputs do not inherit body colour, so dark mode needs this explicitly or
+     the typed text stays black on a dark field */
+  color: var(--text);
 }
 .contact .field input::placeholder,
 .contact .message textarea::placeholder {
-  color: rgb(51, 51, 51);
+  color: var(--text-strong);
 }
 .contact .field input:focus,
 .contact .message textarea:focus {
   padding-left: 47px;
-  border: 2px solid rgb(115, 3, 167);
+  border: 2px solid var(--accent-purple);
 }
 .contact .field input:focus ~ i,
 .contact .message textarea:focus ~ i {
-  color: rgb(115, 3, 167);
+  color: var(--accent-purple);
 }
 .contact form .message {
   position: relative;
-  margin: 1rem;
+  margin: 1rem 0;
   width: 100%;
 }
 .contact form .message i {
@@ -110,7 +117,7 @@
   cursor: pointer;
   border-radius: 5px;
   padding: 13px 25px;
-  background: #2506ad;
+  background: var(--btn-indigo-bg);
   box-shadow: 0px 5px 10px rgba(48, 68, 247, 0.6);
   transition: 0.3s ease;
   font-family: "Nunito", sans-serif;
@@ -130,9 +137,24 @@
   left: 8px;
 }
 
-@media (max-width: 900px) {
+/* Tightens the side margins first, so a tablet keeps the illustration; the form
+   only goes full-width at 768px, where there genuinely isn't room for both. */
+@media (max-width: 992px) {
+  .contact .container {
+    margin: 2rem 0;
+  }
+  .contact .content .image-box {
+    margin-left: 0;
+  }
+  .contact .content form {
+    margin-right: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
   .contact {
     min-height: 70vh;
+    min-height: 70svh;
   }
   .contact .container {
     margin: 3rem 0 2rem 0;
@@ -145,6 +167,19 @@
   }
   .contact .content form {
     width: 100%;
-    margin-right: 2rem;
+    /* was 2rem, which pulled the form off-centre now that it is the only
+       thing in the row */
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact .container .content {
+    padding: 1.5rem 1rem;
+  }
+  .contact form .field input,
+  .contact form .message textarea {
+    /* 16px keeps iOS Safari from zooming in on focus */
+    font-size: 16px;
   }
 }

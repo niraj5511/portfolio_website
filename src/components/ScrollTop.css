@@ -1,16 +1,32 @@
+/* Anchored from the BOTTOM rather than `top: calc(100% - 12rem)`. That
+   percentage was resolved against the viewport height, which changes as the
+   mobile URL bar shows and hides, so the button drifted while scrolling.
+   The yellow chip is theme-invariant, hence the literal colours. */
 #scroll-top {
   position: fixed;
-  top: -140%;
+  bottom: -20rem;
   right: 2rem;
+  min-width: 4.4rem;
+  min-height: 4.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 1rem 1.5rem;
   font-size: 2rem;
   background: #ffae00;
   color: rgb(13, 0, 44);
   border-radius: 50%;
-  transition: 1s linear;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: bottom 0.5s ease;
   z-index: 1000;
   cursor: pointer;
 }
 #scroll-top.active {
-  top: calc(100% - 12rem);
+  bottom: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #scroll-top {
+    transition: none;
+  }
 }

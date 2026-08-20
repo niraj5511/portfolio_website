@@ -1,5 +1,6 @@
 .page_404 {
   min-height: 70vh;
+  min-height: 70svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,19 +9,21 @@
   text-align: center;
 }
 .page_404 .wrapper h1 {
-  font-size: 12rem;
+  /* 12rem overflowed a 360px screen, so it now scales down and caps at the
+     original size from ~840px up */
+  font-size: clamp(7rem, 25vw, 12rem);
   font-weight: 800;
-  color: #0052cc;
+  color: var(--accent);
   line-height: 1;
 }
 .page_404 .msg h3 {
   font-size: 2.5rem;
-  color: #1a1a2e;
+  color: var(--text);
   margin-top: 1rem;
 }
 .page_404 .msg p {
   font-size: 1.6rem;
-  color: #555;
+  color: var(--text-muted);
   margin-top: 0.5rem;
 }
 .page_404 .backbtn {
@@ -32,8 +35,8 @@
   gap: 0.8rem;
   padding: 1.4rem 2.8rem;
   border-radius: 0.5em;
-  color: #fff;
-  background: #0052cc;
+  color: var(--btn-primary-text);
+  background: var(--btn-primary-bg);
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   font-size: 1.6rem;
@@ -41,6 +44,12 @@
   transition: all 0.3s ease;
 }
 .page_404 .backbtn .btn:hover {
-  background: #003d99;
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-2px);
+}
+
+@media screen and (max-width: 480px) {
+  .page_404 .msg h3 {
+    font-size: 2.1rem;
+  }
 }

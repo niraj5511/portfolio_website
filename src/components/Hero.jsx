@@ -3,10 +3,13 @@ import "./Hero.css";
 import Typed from "typed.js";
 import VanillaTilt from "vanilla-tilt";
 import heroImg from "../assets/hero.jpeg";
+import { useTheme } from "../context/ThemeContext.jsx";
+import { isTouchDevice } from "../utils/pointer.js";
 
 const Hero = () => {
   const typedTextRef = useRef(null);
   const imageRef = useRef(null);
+  const { theme } = useTheme();
 
   // typing animation effect
   useEffect(() => {
@@ -26,72 +29,96 @@ const Hero = () => {
     return () => typed.destroy();
   }, []);
 
-  // tilt-on-hover effect for the profile image
+  // tilt-on-hover effect for the profile image.
+  // gyroscope defaults to TRUE in vanilla-tilt, which made the photo tilt with
+  // the phone's orientation sensor — there is no hover on a phone, so the
+  // effect is only ever noise there. Skipped outright on touch.
   useEffect(() => {
-    VanillaTilt.init(imageRef.current, { max: 15 });
+    if (isTouchDevice()) return;
+    const el = imageRef.current;
+    VanillaTilt.init(el, { max: 15, gyroscope: false });
+    return () => el?.vanillaTilt?.destroy();
   }, []);
 
   // particle background (particlesJS comes from the script tag in index.html)
   useEffect(() => {
-    if (window.particlesJS) {
-      window.particlesJS("particles-js", {
-        particles: {
-          number: { value: 80, density: { enable: true, value_area: 800 } },
-          color: { value: "#1a1a2e" },
-          shape: {
-            type: "star",
-            stroke: {
-              width: 2,
-              color: [
-                "rgba(255,255,255,0.8)",
-                "rgba(255,255,200,0.7)",
-                "rgba(173,216,230,0.8)",
-              ],
-            },
-            polygon: { nb_sides: 5 },
-          },
-          opacity: {
-            value: 0.5,
-            random: true,
-            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false },
-          },
-          size: {
-            value: 3,
-            random: true,
-            anim: { enable: true, speed: 39, size_min: 0.81, sync: false },
-          },
-          line_linked: {
-            enable: true,
-            distance: 144,
-            color: "#0052cc",
-            opacity: 0.2,
-            width: 1.6,
-          },
-          move: {
-            enable: true,
-            speed: 5,
-            direction: "none",
-            random: true,
-            straight: false,
-            out_mode: "out",
-          },
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: { enable: true, mode: "repulse" },
-            onclick: { enable: true, mode: "push" },
-            resize: true,
-          },
-          modes: {
-            repulse: { distance: 203 },
-            push: { particles_nb: 4 },
-          },
-        },
-        retina_detect: true,
+    if (!window.particlesJS) return;
+
+    const dark = theme === "dark";
+
+    // particlesJS removes the old canvas itself, but it pushes a new instance
+    // into pJSDom WITHOUT cancelling the previous one's requestAnimationFrame —
+    // so a naive re-init leaks a running animation loop on every theme toggle.
+    // destroypJS cancels the frame; clearing the array drops the stale entry it
+    // leaves behind (it only nulls an inner closure variable).
+    if (window.pJSDom && window.pJSDom.length) {
+      window.pJSDom.forEach((instance) => {
+        try {
+          instance.pJS.fn.vendors.destroypJS();
+        } catch {
+          // a half-torn-down instance should not block re-init
+        }
       });
+      window.pJSDom = [];
     }
-  }, []);
+
+    window.particlesJS("particles-js", {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: dark ? "#8ea8d0" : "#1a1a2e" },
+        shape: {
+          type: "star",
+          stroke: {
+            width: 2,
+            color: [
+              "rgba(255,255,255,0.8)",
+              "rgba(255,255,200,0.7)",
+              "rgba(173,216,230,0.8)",
+            ],
+          },
+          polygon: { nb_sides: 5 },
+        },
+        opacity: {
+          value: 0.5,
+          random: true,
+          anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false },
+        },
+        size: {
+          value: 3,
+          random: true,
+          anim: { enable: true, speed: 39, size_min: 0.81, sync: false },
+        },
+        line_linked: {
+          enable: true,
+          distance: 144,
+          color: dark ? "#4ea1ff" : "#0052cc",
+          opacity: 0.2,
+          width: 1.6,
+        },
+        move: {
+          enable: true,
+          speed: 5,
+          direction: "none",
+          random: true,
+          straight: false,
+          out_mode: "out",
+        },
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" },
+          resize: true,
+        },
+        modes: {
+          repulse: { distance: 203 },
+          push: { particles_nb: 4 },
+        },
+      },
+      retina_detect: true,
+    });
+  }, [theme]);
 
   return (
     <section className="home" id="home">

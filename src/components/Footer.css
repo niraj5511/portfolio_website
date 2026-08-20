@@ -1,7 +1,11 @@
+/* The footer is already dark in light mode. It still gets a --footer-bg dark
+   value so it doesn't merge indistinguishably into --bg once the page darkens —
+   everything layered on it stays literal, since the surface itself never
+   changes character. */
 .footer {
   min-height: auto;
   padding-top: 2rem;
-  background: rgb(0, 1, 43);
+  background: var(--footer-bg);
 }
 .footer .box-container {
   display: flex;
@@ -23,6 +27,8 @@
   color: #ccc;
   padding: 0.7rem 0;
   text-transform: none;
+  /* long addresses and emails should wrap rather than widen the column */
+  overflow-wrap: anywhere;
 }
 .footer .box-container .box p i {
   padding-right: 1rem;
@@ -43,9 +49,12 @@
   padding: 1rem 0;
 }
 .footer .box-container .box .share a {
-  height: 4rem;
-  width: 4rem;
-  padding: 1rem;
+  /* 4.4rem, not 4rem: 40px was just under the 44px minimum touch target */
+  height: 4.4rem;
+  width: 4.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   border-radius: 5rem;
   font-size: 1.7rem;
@@ -86,14 +95,28 @@
   }
 }
 
-@media (max-width: 450px) {
+/* the beating heart is decorative, so it should stop for anyone who has asked
+   for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .footer .fa.pulse {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
   .footer .box-container .box {
-    margin: 1.5rem;
+    margin: 2rem 1.5rem;
   }
-  .footer .box-container .box p {
-    padding: 0.7rem;
+}
+
+@media (max-width: 480px) {
+  .footer .box-container .box {
+    margin: 1.5rem 0;
   }
-  .footer .box-container .box .share a {
-    padding: 1.2rem;
+  .footer .box-container .box h3 {
+    font-size: 2.2rem;
+  }
+  .footer .credit {
+    font-size: 1.4rem;
   }
 }

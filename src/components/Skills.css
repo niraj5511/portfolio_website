@@ -1,5 +1,5 @@
 .skills {
-  background: #ffffff;
+  background: var(--surface);
   padding-top: 3rem;
   padding-bottom: 4rem;
 }
@@ -9,14 +9,14 @@
   font-size: 1.4rem;
   letter-spacing: 0.08rem;
   text-transform: uppercase;
-  color: #0052cc;
+  color: var(--accent);
   font-weight: 700;
   font-family: "Nunito", sans-serif;
   margin-bottom: 0.5rem;
 }
 
 .skills .heading span {
-  color: #ff7b00;
+  color: var(--accent-alt);
 }
 
 /* three-column grid, stacks on smaller screens */
@@ -32,33 +32,38 @@
 .skill-card {
   border-radius: 1.2rem;
   padding: 2.4rem 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* the two "regular" cards: quiet, light, understated */
 .skill-card.light {
-  background: #f7f9fc;
-  border: 1px solid #e5ecfb;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
 }
 .skill-card.light:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 82, 204, 0.08);
 }
 .skill-card.light .skill-card-tagline {
-  color: #0052cc;
+  color: var(--accent);
 }
 .skill-card.light h3 {
-  color: #1a1a2e;
+  color: var(--text);
 }
 .skill-card.light .chip {
-  background: #ffffff;
-  border: 1px solid #e5ecfb;
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 .skill-card.light .chip-label {
-  color: #1a1a2e;
+  color: var(--text);
 }
 
-/* the SAP card: the signature element, deliberately elevated above the other two */
+/* The SAP card: the signature element, deliberately elevated above the other
+   two. `.dark` here means "the dark-coloured card", NOT the dark theme — it is
+   navy in BOTH themes, which is why every value below stays literal and why
+   theming keys off html[data-theme] rather than a .dark class. */
 .skill-card.dark {
   background: linear-gradient(160deg, #0a1128, #0d1a3f);
   border: 1px solid #123166;
@@ -87,6 +92,15 @@
 }
 .skill-card.dark .chip-label {
   color: #eaf3ff;
+}
+/* In dark mode the navy card sits on a near-black section and loses its edge,
+   so it gets a brighter rim and a cool glow to stay visibly raised. */
+html[data-theme="dark"] .skill-card.dark {
+  border-color: #1c4a8f;
+  box-shadow: 0 16px 32px rgba(10, 110, 209, 0.32);
+}
+html[data-theme="dark"] .skill-card.dark:hover {
+  box-shadow: 0 20px 40px rgba(10, 110, 209, 0.45);
 }
 
 .skill-card-header {
@@ -117,9 +131,6 @@
   border-radius: 0.7rem;
   transition: transform 0.2s ease;
 }
-.chip:hover {
-  transform: translateX(4px);
-}
 .chip-icon {
   width: 2.4rem;
   height: 2.4rem;
@@ -142,7 +153,16 @@
   font-family: "Poppins", sans-serif;
 }
 
-@media screen and (max-width: 900px) {
+/* the nudge-on-hover is pointer-only; on touch it just never fires */
+@media (hover: hover) {
+  .chip:hover {
+    transform: translateX(4px);
+  }
+}
+
+/* Raised from 900px to 992px so the three columns stack for the whole tablet
+   band rather than squeezing to ~310px each between 901 and 991. */
+@media screen and (max-width: 992px) {
   .skills-grid {
     grid-template-columns: 1fr;
     max-width: 500px;
@@ -153,5 +173,17 @@
   }
   .skill-card.dark:hover {
     transform: translateY(-4px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .skill-card {
+    padding: 2rem 1.6rem;
+  }
+  .chip {
+    padding: 1rem;
+  }
+  .chip-label {
+    font-size: 1.4rem;
   }
 }
