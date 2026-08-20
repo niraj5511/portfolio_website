@@ -45,6 +45,34 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!--
+      Theme resolution, inline and BLOCKING, for the same reason the preloader
+      below is inline: Vite emits the app bundle as a deferred module, so first
+      paint happens before any React code runs. If the ThemeContext provider
+      applied the theme instead, every dark-mode visitor would see a flash of
+      the light theme on every single load.
+
+      Setting the attribute here also flips the preloader's own dark rules
+      further down, which key off html[data-theme="dark"].
+    -->
+    <script type="text/javascript">
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          // An explicit choice always wins; otherwise follow the OS.
+          var dark = saved
+            ? saved === "dark"
+            : window.matchMedia &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.setAttribute("data-theme", "dark");
+        } catch (e) {
+          /* localStorage throws outright in Safari private mode and wherever
+             storage is blocked. An uncaught throw here would run before the
+             preloader script and leave the page stuck light. */
+        }
+      })();
+    </script>
+
+    <!--
       Preloader styles live inline rather than in src/components/*.css on
       purpose. Vite emits the app bundle as a deferred <script type="module">,
       so first paint happens BEFORE any React code runs — a normal React
@@ -62,6 +90,16 @@
       reflows to Poppins partway through a screen that only lives ~2s.
     -->
     <style>
+      /* Declared here as well as in src/index.css: the bundled stylesheet has
+         not landed during the preloader phase, and without this the scrollbar
+         and native form controls flash light before it does. */
+      html {
+        color-scheme: light;
+      }
+      html[data-theme="dark"] {
+        color-scheme: dark;
+      }
+
       html.pl-loading,
       html.pl-loading body {
         overflow: hidden;
@@ -324,8 +362,8 @@
         ]
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-Crk9ifgA.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BIDjcUox.css">
+    <script type="module" crossorigin src="/assets/index-DdZRrFJq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Aje1iZo7.css">
   </head>
   <body style="margin: 0px">
     <div id="preloader" role="status" aria-live="polite" aria-label="Loading">
@@ -352,9 +390,30 @@
       // byte-level progress: there is no honest way to measure that for
       // images React mounts later. It never moves backwards and never stalls.
       (function () {
-        var MIN_MS = 600; // don't flash on a warm-cache reload
-        var MAX_MS = 3000; // hard ceiling — never wait on the full ~4.8 MB of images
+        // ---- timing config -------------------------------------------------
+        var MIN_MS = 600; // floor: don't flash on a warm-cache reload
+        var MAX_MS = 3000; // ceiling: never wait on the full ~4.8 MB of images
         var FADE_MS = 500; // must match the #preloader opacity transition
+
+        // Intro animation timing. WAIT_FOR_ANIM holds the panel until the
+        // typed line has actually finished, so it is never cut off mid-word on
+        // a fast load. The hold is DERIVED from these three numbers, not
+        // hand-tuned — change any of them and it follows automatically.
+        //
+        // Currently: 200 + 27 chars x 48ms + 900 = ~2400ms.
+        //
+        // Set WAIT_FOR_ANIM to false to go back to dismissing as soon as
+        // loading allows. To hold for a flat duration instead, ignore this and
+        // just raise MIN_MS — and to pin it to an exact time regardless of
+        // load speed, set MIN_MS and MAX_MS to the same value.
+        //
+        // Keep the derived hold under MAX_MS: it is a floor, so a larger value
+        // wins over the ceiling and the panel would outlive the 3s cap.
+        var WAIT_FOR_ANIM = true;
+        var TYPE_START = 200; // delay before the first character
+        var TYPE_STEP = 48; // per character
+        var CURSOR_HOLD = 900; // cursor keeps blinking this long after the last one
+        var animMs = 0; // computed below, once the line length is known
 
         var el = document.getElementById("preloader");
         if (!el) return;
@@ -409,9 +468,17 @@
         function close() {
           if (closing) return;
           closing = true;
-          timers.forEach(clearTimeout);
+          // Hold for whichever floor is longer: the anti-flash minimum, or the
+          // time the intro animation still needs. animMs is 0 under reduced
+          // motion, so nobody is held waiting on an animation that isn't
+          // playing.
+          var hold = Math.max(MIN_MS, animMs) - (Date.now() - started);
           setTimeout(
             function () {
+              // Cleared here rather than at the top of close(): the typing
+              // timers must be allowed to run out during the hold above, and
+              // by this point they already have.
+              timers.forEach(clearTimeout);
               el.classList.add("pl-done");
               setTimeout(function () {
                 // remove the node outright, not just fade it: otherwise it
@@ -420,7 +487,7 @@
                 root.classList.remove("pl-loading");
               }, FADE_MS);
             },
-            Math.max(0, MIN_MS - (Date.now() - started)),
+            Math.max(0, hold),
           );
         }
 
@@ -467,27 +534,24 @@
           window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         if (reduced) {
-          // no typing animation at all — print it and hide the cursor
+          // no typing animation at all — print it and hide the cursor.
+          // animMs stays 0, so close() falls back to the MIN_MS floor.
           typeEl.innerHTML = renderLine(LEN);
           curEl.classList.add("pl-off");
         } else {
-          // Tuned so the line completes around 1.5s, comfortably inside the
-          // 3s cap. On a warm-cache load the panel dismisses at MIN_MS with
-          // the line half-typed, but at that speed it reads as a flash rather
-          // than an unfinished screen.
-          var TYPE_START = 200;
-          var TYPE_STEP = 48;
+          if (WAIT_FOR_ANIM) {
+            animMs = TYPE_START + LEN * TYPE_STEP + CURSOR_HOLD;
+          }
           for (var i = 1; i <= LEN; i++) {
             (function (n) {
               timers.push(
                 setTimeout(function () {
-                  if (closing) return;
                   typeEl.innerHTML = renderLine(n);
                   if (n === LEN) {
                     timers.push(
                       setTimeout(function () {
                         curEl.classList.add("pl-off");
-                      }, 900),
+                      }, CURSOR_HOLD),
                     );
                   }
                 }, TYPE_START + n * TYPE_STEP),
