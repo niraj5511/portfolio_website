@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap");
+/* Mono is used only for small labels, indices and inline chips (About), never
+   for prose — three weights is all that needs loading. */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /*
   DESIGN TOKENS
@@ -84,6 +87,10 @@
 
   /* layout */
   --content-max: 1400px;
+
+  /* font families. Poppins/Nunito are applied directly by name throughout, so
+     only the mono stack needs a token — it is referenced from About.css. */
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
   /*
     Stays at the 9% every section used before the token refactor, so horizontal
     placement is unchanged at every width you'd actually browse at. A clamped

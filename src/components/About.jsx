@@ -1,78 +1,129 @@
 import React, { useEffect, useRef } from "react";
 import "./About.css";
-import VanillaTilt from "vanilla-tilt";
-import aboutImg from "../assets/about.jpeg"; // swap to hero.jpeg if you don't have this yet
-import { isTouchDevice } from "../utils/pointer.js";
+import aboutImg from "../assets/about.jpeg";
 
 const About = () => {
-  const imageRef = useRef(null);
+  const sectionRef = useRef(null);
 
-  // tilt-on-hover effect, same as the Hero photo — and skipped on touch for the
-  // same reason: no hover to respond to, and vanilla-tilt's gyroscope option
-  // defaults to TRUE, so the photo tilted with the phone's orientation sensor.
+  // Staggered fade-up as the section scrolls into view. Each element is
+  // unobserved once it has played, so nothing re-animates on scroll-back.
+  //
+  // VanillaTilt used to run on this photo and has been removed: the frame now
+  // carries a CSS `rotate(-2deg)` that straightens on hover, and tilt writes
+  // its own transform to the same element — the two overwrite each other.
   useEffect(() => {
-    if (isTouchDevice()) return;
-    const el = imageRef.current;
-    VanillaTilt.init(el, { max: 15, gyroscope: false });
-    return () => el?.vanillaTilt?.destroy();
+    const els = sectionRef.current?.querySelectorAll(".reveal");
+    if (!els?.length) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      els.forEach((el) => el.classList.add("in"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
   }, []);
 
   return (
-    <section className="about" id="about">
+    <section className="about" id="about" ref={sectionRef}>
+      {/* two blurred colour washes, so the panel has something to float above */}
+      <div className="about-ambient" aria-hidden="true">
+        <i></i>
+        <i></i>
+      </div>
+
+      {/* <span className="about-kicker">// about me</span> */}
       <h2 className="heading">
         <i className="fas fa-user-alt"></i> Who <span>I Am</span>
       </h2>
+      <div className="about-rule"></div>
 
-      <div className="row">
-        <div className="image">
-          <img
-            draggable="false"
-            ref={imageRef}
-            src={aboutImg}
-            alt="Niraj with laptop"
-            title="Niraj - Developer"
-          />
-        </div>
-
-        <div className="content">
-          <h3>Hello, I'm Niraj</h3>
-          <span className="tag">
-            Front-End Developer | Hands-on Experience with SAP B1 & HANA
-          </span>
-          <p>
-            I'm a Computer Engineering student at NCIT, Pokhara University, with
-            a passion for building responsive and user-friendly web
-            applications. I specialize in front-end development with React.js,
-            and through my internship at IIS Incorporation, I've also gained
-            hands-on experience with SAP Business One, SAP HANA, and Crystal
-            Reports. My strengths extend beyond coding to include strong
-            presentation and leadership skills, sharpened through my role as
-            Secretary of Nepal Tek Community, which help me effectively
-            communicate ideas and lead collaborative projects. I'm always eager
-            to learn new tools and create meaningful digital experiences.
-          </p>
-
-          <div className="box-container">
-            <div className="box">
-              <p>
-                <span>Email: </span> nirajbhusal551@gmail.com
-              </p>
-              <p>
-                <span>Location: </span> Lalitpur, Nepal
-              </p>
+      <div className="about-panel reveal">
+        <div className="about-grid">
+          <div className="about-photo-wrap">
+            <div className="about-photo">
+              <img
+                draggable="false"
+                src={aboutImg}
+                alt="Niraj with laptop"
+                title="Niraj - Developer"
+              />
             </div>
           </div>
 
-          <div className="resumebtn">
-            <a
-              href="https://drive.google.com/file/d/1b-HoV804OvMxHeFJbd8NhPFgZN_PVz_I/view?usp=sharing"
-              target="_blank"
-              rel="noreferrer"
-              className="btn"
-            >
-              <span>View My Resume</span>
-              <i className="fas fa-chevron-right"></i>
-            </a>
+          <div className="about-text">
+            <p className="code-line reveal d1">
+              const <span>aboutMe = {"{"}</span>
+            </p>
+
+            <h3 className="about-name reveal d1">
+              Hi, I'm<em>Niraj</em>
+              <span className="caret"></span>
+            </h3>
+
+            <p className="about-lead reveal d1">
+              A Computer Engineering student at NCIT, Pokhara University,
+              currently in my final semester. I like turning ideas into working
+              software, whether that's a <code>React</code> interface, a data
+              pipeline in <code>SAP HANA</code>, or a small tool that saves
+              someone time.
+            </p>
+
+            <p className="about-lead reveal d2">
+              My internship at IIS Incorporation gave me real-world exposure to
+              enterprise systems like <code>SAP B1</code> and <code>Odoo</code>,
+              while my project work has sharpened my frontend and
+              problem-solving skills.
+            </p>
+
+            <div className="about-award reveal d2">
+              <span className="award-medal">
+                <i className="fas fa-trophy"></i>
+              </span>
+              <div>
+                <p className="award-k">First Position</p>
+                <p className="award-v">
+                  <b>SecureShield</b> — Final Year Project Exhibition
+                </p>
+              </div>
+              <span className="award-ghost" aria-hidden="true">
+                1st
+              </span>
+            </div>
+
+            <p className="about-lead soft reveal d2">
+              When I'm not coding, I'm organizing events as Secretary of Nepal
+              Tek Community (NTK), where I get to combine my interest in tech
+              with community building.
+            </p>
+
+            <p className="code-line code-close reveal d2">{"};"}</p>
+
+            <div className="about-actions reveal d2">
+              <a
+                href="https://drive.google.com/file/d/1b-HoV804OvMxHeFJbd8NhPFgZN_PVz_I/view?usp=sharing"
+                target="_blank"
+                rel="noreferrer"
+                className="about-btn solid"
+              >
+                View My Resume <i className="fas fa-chevron-right"></i>
+              </a>
+              <a href="#contact" className="about-btn ghost">
+                &lt;/&gt; Let's build something
+              </a>
+            </div>
           </div>
         </div>
       </div>

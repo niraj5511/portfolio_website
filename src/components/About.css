@@ -1,158 +1,905 @@
-.about .row {
-  display: flex;
-  gap: 3rem;
-  flex-wrap: wrap;
-  padding: 4rem 6%;
-  justify-content: center;
+/*
+  ABOUT
+  =====
+  Section-local tokens only — every value derives from the global palette in
+  index.css (tints of --accent / --accent-purple / --accent-alt). Nothing new
+  is introduced to the site-wide token set except --font-mono, which lives in
+  index.css because it is a font family, not an About-only colour.
+
+  Facts that other sections own (degree, employer, tech list, email) are
+  deliberately absent here: Education, Experience, Skills and Contact each
+  state them once already.
+*/
+.about {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 4rem max(var(--gutter), (100% - var(--content-max)) / 2) 7rem;
+
+  --chip-bg: rgba(0, 82, 204, 0.09);
+  --award-tint: rgba(255, 123, 0, 0.1);
+  --ghost-1st: rgba(255, 123, 0, 0.38);
+  --ghost-1st-strong: rgba(255, 123, 0, 0.62);
+  --glow-a: rgba(0, 82, 204, 0.5);
+  --glow-b: rgba(115, 3, 167, 0.42);
+  --ambient-op: 0.16;
+  --sheen: rgba(255, 255, 255, 0.55);
+
+  /* Resume button. The gradient END is a token because the dark palette cannot
+     reuse --accent-purple here: #b57bff is tuned to read as TEXT on a dark
+     background, so white label text on top of it lands near 2.5:1. The dark
+     value below is a deeper violet that keeps the same hue at ~6:1. */
+  --btn-grad-a: var(--btn-indigo-bg);
+  --btn-grad-b: rgb(115, 3, 167);
+  --btn-glow: rgba(48, 68, 247, 0.35);
+  --btn-glow-hover: rgba(48, 68, 247, 0.48);
+}
+
+html[data-theme="dark"] .about {
+  --chip-bg: rgba(78, 161, 255, 0.14);
+  --award-tint: rgba(255, 176, 87, 0.12);
+  --ghost-1st: rgba(255, 176, 87, 0.45);
+  --ghost-1st-strong: rgba(255, 176, 87, 0.72);
+  --glow-a: rgba(78, 161, 255, 0.45);
+  --glow-b: rgba(181, 123, 255, 0.4);
+  --ambient-op: 0.22;
+  /* white at 55% reads as a grey haze on a dark card, so the sweep is dimmed */
+  --sheen: rgba(255, 255, 255, 0.14);
+
+  --btn-grad-a: #4b3fd0;
+  --btn-grad-b: #6f3ecb;
+  --btn-glow: rgba(75, 63, 208, 0.45);
+  --btn-glow-hover: rgba(111, 62, 203, 0.6);
+}
+
+/* ---------------- ambient light ---------------- */
+.about-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.about-ambient i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: var(--ambient-op);
+}
+
+.about-ambient i:nth-child(1) {
+  width: 46rem;
+  height: 46rem;
+  top: -14rem;
+  left: -10rem;
+  background: var(--glow-a);
+}
+
+.about-ambient i:nth-child(2) {
+  width: 40rem;
+  height: 40rem;
+  bottom: -16rem;
+  right: -8rem;
+  background: var(--glow-b);
+}
+
+/* ---------------- header stack ---------------- */
+.about-kicker {
+  display: block;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.28rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+
+.about-rule {
+  width: 7rem;
+  height: 0.35rem;
+  margin: 1.8rem auto 0;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+}
+
+/* ---------------- the panel ----------------
+   One elevated card holds the section; the photo hangs off its left edge at
+   desktop widths, which is what keeps it from reading as two columns in a box. */
+.about-panel {
+  position: relative;
+  margin-top: 5rem;
+  padding: 5rem 5rem 4.5rem;
+  background: var(--surface);
+  border: 0.1rem solid var(--border);
+  border-radius: 2.4rem;
+  box-shadow: 0 2.6rem 6rem var(--shadow-color);
+}
+
+.about-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 3rem;
+  right: 3rem;
+  height: 0.28rem;
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    var(--accent-purple),
+    transparent
+  );
+}
+
+/* faint dot field in the far corner — texture, not decoration */
+.about-panel::after {
+  content: "";
+  position: absolute;
+  top: 2.4rem;
+  right: 2.4rem;
+  width: 10rem;
+  height: 10rem;
+  background-image: radial-gradient(var(--border-input) 1.4px, transparent 1.4px);
+  background-size: 1.4rem 1.4rem;
+  opacity: 0.75;
+  border-radius: 0.6rem;
+  pointer-events: none;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 30rem 1fr;
+  gap: 5.5rem;
   align-items: center;
 }
 
-.about .row .image {
-  flex: 1 1 30rem;
+/* ---------------- photo ----------------
+   The motion is split across two elements on purpose: the WRAPPER carries the
+   looping drift and the FRAME carries the resting tilt plus the hover state.
+   One element cannot hold both — a keyframed transform and a hover transform
+   write to the same property, and the animation always wins the cascade. */
+.about-photo-wrap {
+  position: relative;
+  padding: 1.4rem;
+  animation: about-float 7s ease-in-out infinite;
 }
 
-.about .row .image img {
-  margin: 2rem auto;
-  width: 28rem;
-  height: auto;
-  border-radius: 10px;
-  /* decorative magenta/cyan glow — reads on both themes, left literal */
-  border: 2px solid rgba(255, 0, 180, 0.5);
-  box-shadow:
-    0 0 10px rgba(255, 0, 180, 0.3),
-    0 0 20px rgba(0, 255, 255, 0.2);
-  transition: 0.4s ease;
-  cursor: pointer;
-  filter: grayscale(60%);
+.about-photo-wrap:hover {
+  animation-play-state: paused;
 }
 
-.about .row .image img:hover {
+@keyframes about-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.1rem);
+  }
+}
+
+/* two L-shaped brackets: a quiet code cue that doubles as a frame. They open
+   outward on hover, which is what makes the photo feel like it is being framed
+   rather than just scaled. */
+.about-photo-wrap::before,
+.about-photo-wrap::after {
+  content: "";
+  position: absolute;
+  width: 4.2rem;
+  height: 4.2rem;
+  border: 0.25rem solid var(--accent);
+  border-radius: 0.4rem;
+  transition:
+    inset 0.45s cubic-bezier(0.22, 0.7, 0.18, 1),
+    width 0.45s ease,
+    height 0.45s ease;
+}
+
+.about-photo-wrap::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.about-photo-wrap::after {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+  border-color: var(--accent-purple);
+}
+
+.about-photo-wrap:hover::before {
+  top: -0.7rem;
+  left: -0.7rem;
+  width: 5.4rem;
+  height: 5.4rem;
+}
+
+.about-photo-wrap:hover::after {
+  bottom: -0.7rem;
+  right: -0.7rem;
+  width: 5.4rem;
+  height: 5.4rem;
+}
+
+.about-photo {
+  position: relative;
+  border-radius: 1.6rem;
+  padding: 0.6rem;
+  /* three stops and a 220% canvas so the gradient can be SLID rather than
+     cross-faded — gradients are not interpolable, background-position is */
+  background-image: linear-gradient(
+    140deg,
+    var(--accent),
+    var(--accent-purple),
+    var(--accent)
+  );
+  background-size: 220% 220%;
+  box-shadow: 0 1.8rem 4.4rem var(--shadow-color);
+  transform: rotate(-2deg);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 0.7, 0.18, 1),
+    box-shadow 0.55s ease;
+  animation: about-frame-shift 9s ease-in-out infinite;
+}
+
+@keyframes about-frame-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.about-photo:hover {
+  transform: rotate(0deg) scale(1.03);
+  box-shadow: 0 2.6rem 5.8rem var(--shadow-color);
+}
+
+/* coloured halo, under the frame — swells with the hover */
+.about-photo::after {
+  content: "";
+  position: absolute;
+  inset: -1.4rem;
+  z-index: -2;
+  border-radius: 2.4rem;
+  background: linear-gradient(140deg, var(--glow-a), var(--glow-b));
+  filter: blur(28px);
+  opacity: 0.45;
+  transition:
+    opacity 0.55s ease,
+    inset 0.55s ease;
+}
+
+.about-photo:hover::after {
+  inset: -2.2rem;
+  opacity: 0.85;
+}
+
+.about-photo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 60%;
+  height: 60%;
+  right: -1.6rem;
+  bottom: -1.6rem;
+  border-radius: 1.2rem;
+  background-image: radial-gradient(var(--accent-purple) 1.2px, transparent 1.2px);
+  background-size: 1.2rem 1.2rem;
+  opacity: 0.35;
+}
+
+.about-photo img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 1.2rem;
+  filter: grayscale(55%);
+  transition: filter 0.45s ease;
+}
+
+.about-photo:hover img {
   filter: grayscale(0%);
-  transform: scale(1.03);
-  border: 2px solid rgba(255, 0, 180, 0.8);
-  box-shadow:
-    0 0 16px rgba(255, 0, 180, 0.6),
-    0 0 30px rgba(0, 255, 255, 0.4);
 }
 
-.about .row .content {
-  flex: 1 1 50rem;
-  padding: 2rem;
+/* ---------------- text column ---------------- */
+.about .code-line {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--accent);
 }
 
-.about .row .content h3 {
-  font-size: 3rem;
+.about .code-line span {
+  color: var(--text-muted);
+}
+
+.about .code-close {
+  margin-top: 2.6rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.about-name {
+  font-size: 3.8rem;
+  font-weight: 800;
+  color: var(--text-deep);
+  line-height: 1.15;
+  letter-spacing: -0.05rem;
+  margin: 1.2rem 0 2.2rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* gradient on the name only — the greeting stays a solid, readable colour */
+.about-name em {
+  font-style: normal;
+  margin-left: 1rem;
+  background: linear-gradient(100deg, var(--accent), var(--accent-purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about .caret {
+  display: inline-block;
+  width: 0.28rem;
+  height: 3.2rem;
+  margin-left: 0.8rem;
+  border-radius: 0.2rem;
+  background: var(--accent-purple);
+  animation: about-blink 1.1s step-end infinite;
+}
+
+@keyframes about-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.about-lead {
+  font-family: "Nunito", sans-serif;
+  font-size: 1.65rem;
+  line-height: 2;
+  color: var(--text);
+  max-width: 64ch;
+}
+
+.about-lead + .about-lead {
+  margin-top: 1.5rem;
+}
+
+.about-lead.soft {
+  color: var(--text-muted);
+  font-size: 1.55rem;
+}
+
+/* inline chips — mono texture that also makes the tech scannable */
+.about code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--accent-deep);
+  background: var(--chip-bg);
+  padding: 0.2em 0.5em;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+}
+
+/* ---------------- award ----------------
+   Lifted out of the paragraph on purpose: a first-place finish was the
+   strongest line in the section and it was buried in an em-dash clause where
+   a skim-reader would miss it. The only warm element here, so it wins the eye.
+
+   "1st" is absolutely positioned rather than a flex child, so it holds the
+   same corner at every width instead of wrapping onto its own line. */
+.about-award {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  margin-top: 2.8rem;
+  padding: 1.9rem 9rem 1.9rem 2.2rem;
+  max-width: 54rem;
+  border-radius: 1.4rem;
+  border: 0.1rem solid var(--border);
+  background:
+    linear-gradient(100deg, var(--award-tint), transparent 70%),
+    var(--surface-2);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 0.7, 0.18, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.about-award:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 1.6rem 3.6rem var(--shadow-color);
+  border-color: var(--accent-alt);
+}
+
+/* Sheen. Deliberately NOT transitioned in the resting state: with a symmetric
+   transition the highlight visibly slid backwards across the card on mouse-out.
+   Declaring the timing only on :hover means the reset is instantaneous, and it
+   happens while the strip is parked outside the clip bounds, so it is unseen. */
+.about-award::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, var(--sheen), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.about-award:hover::after {
+  left: 130%;
+  transition: left 0.8s ease;
+}
+
+/* (the strip's own slide-in lives with the other reveal rules further down,
+   so it cannot be overridden by them) */
+
+.award-medal {
+  position: relative;
+  flex-shrink: 0;
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: 1.2rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.9rem;
+  color: #fff;
+  background: linear-gradient(140deg, var(--accent-alt), #ff4d00);
+  box-shadow: 0 0.6rem 1.6rem rgba(255, 123, 0, 0.4);
+}
+
+/* medal drops in with a slight overshoot once the strip is in view.
+   `backwards` (not `both`) on purpose: the fill has to release when the
+   animation ends, or it would keep overriding the hover transform below. */
+.about-award.in .award-medal {
+  animation: about-medal-in 0.7s cubic-bezier(0.2, 0.9, 0.2, 1) 0.25s backwards;
+}
+
+@keyframes about-medal-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-30deg);
+  }
+  60% {
+    transform: scale(1.14) rotate(8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* slow halo pulse so the medal keeps a heartbeat after it lands */
+.award-medal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: about-medal-pulse 3s ease-out 1s infinite;
+}
+
+@keyframes about-medal-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 123, 0, 0.5);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 1.4rem rgba(255, 123, 0, 0);
+  }
+}
+
+.about-award:hover .award-medal {
+  transform: scale(1.06);
+  transition: transform 0.35s ease;
+}
+
+.about-award:hover .award-medal i {
+  animation: about-trophy-wiggle 0.65s ease;
+}
+
+@keyframes about-trophy-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-14deg) scale(1.1);
+  }
+  65% {
+    transform: rotate(11deg) scale(1.1);
+  }
+}
+
+.award-k {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
+  color: var(--accent-alt);
+}
+
+.award-v {
+  font-family: "Nunito", sans-serif;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  color: var(--text);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+.award-v b {
   color: var(--text-deep);
 }
 
-.about .row .content .tag {
-  font-size: 1.6rem;
-  color: var(--accent-deep);
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+.award-ghost {
+  position: absolute;
+  right: 1.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 4.6rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.2rem;
+  /* a flat tint rather than opacity on the accent: at the opacity needed to
+     stay legible, a translucent orange greyed out against the warm card */
+  color: var(--ghost-1st);
+  pointer-events: none;
+  transition:
+    color 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 0.7, 0.18, 1);
 }
 
-.about .row .content p {
-  font-size: 1.5rem;
-  line-height: 2.3rem;
-  font-family: "Nunito", sans-serif;
-  font-weight: 500;
-  margin-bottom: 2rem;
-  color: var(--text);
+/* slides in from the right edge just after the medal lands */
+.about-award.in .award-ghost {
+  animation: about-1st-in 0.75s cubic-bezier(0.22, 0.7, 0.18, 1) 0.45s backwards;
 }
 
-.about .row .content .box-container {
+@keyframes about-1st-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(2rem) scale(0.82);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0) scale(1);
+  }
+}
+
+.about-award:hover .award-ghost {
+  color: var(--ghost-1st-strong);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* ---------------- actions ---------------- */
+.about-actions {
   display: flex;
+  gap: 1.4rem;
   flex-wrap: wrap;
-  gap: 2rem;
+  margin-top: 3.2rem;
 }
 
-.about .row .content .box-container .box p {
-  font-size: 1.4rem;
-  line-height: 1.9rem;
-}
-
-.about .row .content .box-container .box p span {
-  color: var(--accent-vivid);
-  font-weight: 600;
-}
-
-/* Resume Button */
-.resumebtn {
-  margin-top: 4rem;
-}
-
-.resumebtn .btn {
-  padding: 1.4rem 2.5rem;
-  border-radius: 0.5em;
-  color: var(--btn-primary-text);
-  background: var(--btn-indigo-bg);
-  font-family: "Nunito", sans-serif;
-  font-weight: 600;
-  font-size: 1.7rem;
-  letter-spacing: 0.05rem;
-  box-shadow: 0 4px 15px rgba(48, 68, 247, 0.4);
-  transition: all 0.3s ease;
+.about-btn {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  padding: 1.5rem 2.6rem;
+  border-radius: 0.9rem;
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 1.65rem;
+  letter-spacing: 0.03rem;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    color 0.28s ease;
 }
 
-.resumebtn .btn i {
-  margin-left: 0.5rem;
+.about-btn.solid {
+  color: var(--btn-primary-text);
+  /* same slide-not-fade trick as the photo frame: three stops on a 200% canvas,
+     so hover moves background-position instead of trying to tween a gradient */
+  background-image: linear-gradient(
+    100deg,
+    var(--btn-grad-a),
+    var(--btn-grad-b),
+    var(--btn-grad-a)
+  );
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  box-shadow: 0 0.8rem 2.2rem var(--btn-glow);
+  transition:
+    background-position 0.6s ease,
+    transform 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.about-btn.solid:hover {
+  background-position: 100% 50%;
+  transform: translateY(-0.3rem);
+  box-shadow: 0 1.2rem 2.8rem var(--btn-glow-hover);
+}
+
+.about-btn.solid i {
   font-size: 1.4rem;
-  transition: 0.3s;
+  transition: transform 0.3s ease;
 }
 
-.resumebtn .btn:hover {
-  background: var(--btn-indigo-bg-hover);
-  box-shadow: 0 6px 20px rgba(26, 4, 126, 0.5);
+.about-btn.solid:hover i {
+  transform: translateX(0.5rem);
 }
 
-.resumebtn .btn:hover i {
-  transform: translateX(6px);
+/* sheen: timing declared only on :hover, so the reset is instant and offscreen
+   instead of sliding back across the label (see the award strip above) */
+.about-btn.solid::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
 }
 
-/* about media queries.
-   Raised from 600px to 768px: between 601 and 767 the row was still trying to
-   sit side by side inside a 40rem flex basis, which forced the text column
-   into a very narrow measure. */
-@media screen and (max-width: 768px) {
-  .about .row {
-    padding: 2rem 1rem;
-    margin-bottom: 5rem;
-    flex-direction: column;
+.about-btn.solid:hover::after {
+  left: 130%;
+  transition: left 0.7s ease;
+}
+
+.about-btn.ghost {
+  color: var(--text);
+  background: transparent;
+  box-shadow: inset 0 0 0 0.2rem var(--border-input);
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.about-btn.ghost:hover {
+  color: var(--accent);
+  box-shadow: inset 0 0 0 0.2rem var(--accent);
+  transform: translateY(-0.3rem);
+}
+
+/* ---------------- scroll reveal ----------------
+   Uses the INDEPENDENT `translate` property, not `transform`. Everything
+   animated in this section — the photo's resting tilt, the award's hover lift,
+   the medal's drop-in keyframes — writes to `transform`, and the reveal rules
+   sit last in the file, so a transform-based reveal won every one of those on
+   equal specificity and silently killed them. `translate` composes instead of
+   competing. */
+.about .reveal {
+  opacity: 0;
+  translate: 0 2.6rem;
+  transition:
+    opacity 0.65s ease,
+    translate 0.65s ease;
+}
+
+.about .reveal.in {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* the award strip is dealt in from the left rather than lifted from below */
+.about .about-award.reveal {
+  translate: -2.4rem 1.6rem;
+}
+
+.about .about-award.reveal.in {
+  translate: 0 0;
+}
+
+.about .d1 {
+  transition-delay: 0.1s;
+}
+
+.about .d2 {
+  transition-delay: 0.2s;
+}
+
+/* NOTE: no rule here may set a transform on .about-photo. An earlier version
+   pinned the resting tilt from `.about-panel.reveal .about-photo`, which has
+   the same specificity as `.about-photo:hover` but sits later in the file — so
+   it won the cascade and the hover never fired at all. The tilt lives on
+   .about-photo itself; the panel's reveal only moves the panel. */
+
+/* ---------------- desktop: hang the photo off the panel edge ---------------- */
+@media screen and (min-width: 1150px) {
+  .about-panel {
+    padding-left: 3.5rem;
   }
 
-  .about .row .image {
-    margin-top: 1rem;
+  .about-photo-wrap {
+    margin-left: -8rem;
+  }
+}
+
+/* ---------------- responsive ---------------- */
+@media screen and (max-width: 1024px) {
+  .about-panel {
+    padding: 4rem 3.5rem;
   }
 
-  .about .row .image img {
-    width: 85%;
-    margin: 0 auto;
-    /* no hover on touch, so the grayscale would never lift */
+  .about-grid {
+    grid-template-columns: 26rem 1fr;
+    gap: 4rem;
+  }
+
+  .about-name {
+    font-size: 3.2rem;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 4.5rem;
+    justify-items: center;
+  }
+
+  .about-photo-wrap {
+    max-width: 30rem;
+  }
+
+  .about-text {
+    text-align: center;
+  }
+
+  .about-name {
+    justify-content: center;
+  }
+
+  .about-lead {
+    max-width: 58ch;
+    margin-inline: auto;
+  }
+
+  .about-award {
+    text-align: left;
+    margin-inline: auto;
+  }
+
+  .about-actions {
+    justify-content: center;
+  }
+
+  .about-panel::after {
+    display: none;
+  }
+
+  /* no hover on touch, so the grayscale would never lift */
+  .about-photo img {
     filter: grayscale(0%);
   }
+}
 
-  .about .row .content {
-    padding: 1.5rem;
+@media screen and (max-width: 560px) {
+  .about {
+    padding-inline: 1.6rem;
   }
 
-  .about .row .content .box-container {
-    gap: 1rem;
+  .about-panel {
+    padding: 3.2rem 2rem;
+    border-radius: 1.8rem;
+  }
+
+  .about-name {
+    font-size: 2.6rem;
+  }
+
+  .about .caret {
+    height: 2.4rem;
+  }
+
+  .about-lead {
+    font-size: 1.55rem;
+  }
+
+  .about-award {
+    padding: 1.7rem 6.5rem 1.7rem 1.7rem;
+    gap: 1.4rem;
+  }
+
+  .about-award:hover {
+    transform: none;
+  }
+
+  .award-ghost {
+    right: 1.2rem;
+    font-size: 3.4rem;
+  }
+
+  .about-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .about .row {
-    padding: 2rem 0;
+@media (prefers-reduced-motion: reduce) {
+  .about .reveal {
+    opacity: 1;
+    translate: 0 0;
+    transition: none;
   }
-  .about .row .content {
-    padding: 1rem 0;
+
+  /* every looping and entrance animation in the section, in one sweep:
+     caret blink, photo drift, gradient slide, medal drop + pulse, 1st slide,
+     trophy wiggle */
+  .about *,
+  .about *::before,
+  .about *::after {
+    animation: none !important;
   }
-  .about .row .content h3 {
-    font-size: 2.4rem;
+
+  .about .about-award.reveal {
+    translate: 0 0;
+  }
+
+  .about-photo:hover,
+  .about-award:hover,
+  .about-award:hover .award-medal,
+  .about-btn:hover {
+    transform: none;
+  }
+
+  .about-photo,
+  .about-photo:hover {
+    transform: rotate(-2deg);
+  }
+
+  .about-award:hover .award-ghost {
+    transform: translateY(-50%);
+  }
+
+  .about-photo-wrap:hover::before,
+  .about-photo-wrap:hover::after {
+    inset: auto;
+    width: 4.2rem;
+    height: 4.2rem;
+  }
+
+  .about-photo-wrap:hover::before {
+    top: 0;
+    left: 0;
+  }
+
+  .about-photo-wrap:hover::after {
+    bottom: 0;
+    right: 0;
+  }
+
+  .about-award::after,
+  .about-btn.solid::after {
+    display: none;
   }
 }
