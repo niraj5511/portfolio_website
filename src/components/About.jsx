@@ -5,12 +5,6 @@ import aboutImg from "../assets/about.jpeg";
 const About = () => {
   const sectionRef = useRef(null);
 
-  // Staggered fade-up as the section scrolls into view. Each element is
-  // unobserved once it has played, so nothing re-animates on scroll-back.
-  //
-  // VanillaTilt used to run on this photo and has been removed: the frame now
-  // carries a CSS `rotate(-2deg)` that straightens on hover, and tilt writes
-  // its own transform to the same element — the two overwrite each other.
   useEffect(() => {
     const els = sectionRef.current?.querySelectorAll(".reveal");
     if (!els?.length) return;
