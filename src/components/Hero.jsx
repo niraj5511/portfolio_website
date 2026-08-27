@@ -29,10 +29,6 @@ const Hero = () => {
     return () => typed.destroy();
   }, []);
 
-  // tilt-on-hover effect for the profile image.
-  // gyroscope defaults to TRUE in vanilla-tilt, which made the photo tilt with
-  // the phone's orientation sensor — there is no hover on a phone, so the
-  // effect is only ever noise there. Skipped outright on touch.
   useEffect(() => {
     if (isTouchDevice()) return;
     const el = imageRef.current;
