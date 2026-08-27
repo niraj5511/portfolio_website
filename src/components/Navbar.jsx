@@ -45,9 +45,6 @@ const Navbar = () => {
         <img src={mylogo} width="132" alt="Niraj Bhusal logo" />
       </Link>
 
-      {/* Grouped so the toggle and the hamburger stay together on the right.
-          On mobile .navbar is position:fixed and leaves the flow, which leaves
-          just these two controls in the header bar. */}
       <div className="nav-right">
         <nav className={`navbar ${menuOpen ? "nav-toggle" : ""}`}>
           <ul>
