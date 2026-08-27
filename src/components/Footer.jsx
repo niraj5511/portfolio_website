@@ -3,10 +3,6 @@ import { Link } from "react-router-dom";
 import "./Footer.css";
 import mylogo from "../assets/mylogo3.png";
 
-/* Single source of truth for the details that appear in more than one place
-   here (the email is both a visible link and a social icon). The previous
-   markup repeated it and drifted: the visible text said ...551@gmail.com while
-   the mailto pointed at a stale ...2077@gmail.com. */
 const EMAIL = "nirajbhusal551@gmail.com";
 const PHONE_DISPLAY = "+977 9860970391";
 const PHONE_HREF = "+9779860970391";
