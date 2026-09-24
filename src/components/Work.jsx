@@ -15,8 +15,8 @@ const projects = [
       desc: "Built the React frontend for a phishing URL and SMS scam detection system (team project) — won First Position at NCIT's Final Year Project Exhibition 2083.",
       image: secureShieldImg,
       links: {
-        view: "https://secureshieldd.netlify.app/", // add a live demo link here if you have one
-        code: "https://github.com/niraj5511", // replace with the actual repo link
+        view: "https://secureshhield.netlify.app",
+        code: "https://github.com/niraj5511/secureshield-frontend", 
       },
     },
   //   {
