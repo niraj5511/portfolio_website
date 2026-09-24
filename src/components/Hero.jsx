@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "./Hero.css";
 import Typed from "typed.js";
 import VanillaTilt from "vanilla-tilt";
-import heroImg from "../assets/hero.jpeg";
+import heroImg from "../assets/hero.JPG";
 import { useTheme } from "../context/ThemeContext.jsx";
 import { isTouchDevice } from "../utils/pointer.js";
 
