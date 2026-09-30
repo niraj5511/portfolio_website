@@ -5,7 +5,6 @@ import "./ProjectsPage.css";
 import { isTouchDevice } from "../utils/pointer.js";
 
 import secureShieldImg from "../assets/secureshield.png";
-// import nepseImg from "../assets/nepse-predictor.png";
 import cgpaImg from "../assets/cgpa-calculator.png";
 import bookSearchImg from "../assets/reactprojects.png";
 
@@ -17,13 +16,6 @@ const allProjects = [
     image: secureShieldImg,
     links: { view: "https://secureshhield.netlify.app", code: "https://github.com/niraj5511/secureshield-frontend" },
   },
-//   {
-//     name: "NEPSE Share Price Predictor",
-//     category: "ml",
-//     desc: "A React web app that predicts NEPSE share prices using ridge regression with walk-forward backtesting and an interactive SVG chart.",
-//     image: nepseImg,
-//     links: { view: "#", code: "https://github.com/niraj5511" },
-//   },
   {
     name: "CGPA Calculator",
     category: "tool",
