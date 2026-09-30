@@ -216,7 +216,7 @@ const CgpaCalculator = () => {
               onChange={(e) => setDepartment(e.target.value)}
             >
               <option value="">-- Select Department --</option>
-              <option value="CE">Computer Engineering</option>
+              <option value="CE">Computer Engineering (2022 Batch)</option>
             </select>
             <button className="autofill-btn" onClick={autofillDepartment}>
               ⚡ Autofill Subjects
