@@ -23,7 +23,7 @@ const Education = () => {
           <div className="content">
             <h3>Bachelor of Engineering in Computer Engineering</h3>
             <p>Nepal College of Information Technology | Pokhara University</p>
-            <h4>2022-2026 | Final Semester</h4>
+            <h4>2022-2026 | Final Completed</h4>
           </div>
         </div>
 
