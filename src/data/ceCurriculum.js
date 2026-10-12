@@ -63,7 +63,7 @@ const ceCurriculum = [
       { name: "Computer Networks", credits: 3 },
       { name: "Compiler Design", credits: 2 },
       { name: "Image Processing and Pattern Recognition", credits: 3 },
-      { name: "Machine Learning", credits: 2 },
+      { name: "Machine Learning", credits: 3 },
       { name: "Simulation and Modelling", credits: 3 },
       { name: "Project I", credits: 1 },
       { name: "Elective I", credits: 3 },
