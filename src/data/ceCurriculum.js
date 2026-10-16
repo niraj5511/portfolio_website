@@ -1,4 +1,4 @@
-// Computer Engineering curriculum, Pokhara University
+// Computer Engineering (2022) curriculum, Pokhara University
 const ceCurriculum = [
   {
     name: "1st Semester",
